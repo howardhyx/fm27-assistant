@@ -23,6 +23,23 @@ python scripts/fm.py baseline
 
 [数据类型与命令](references/data-types.md)列出筛选方式；[字段与关联规则](references/semantics.md)解释 ID、原值和覆盖范围。只读本地文件，不操作游戏界面、进程或原存档；未知结构与不匹配版本明确失败。完整触球流、热图、连续跑位、完整定位球指令和实时数据尚不支持，部分字段语义仍未确认。
 
+## 依赖与致谢
+
+本项目借助了以下开源项目，感谢原作者及社区贡献者的工作。
+
+| 项目 | 版本或引用方式 | 在本项目中的用途 |
+|---|---|---|
+| [fmsave](https://github.com/rhiever/fmsave) | 0.10.0，随包运行依赖 | 提供存档读取基础，包括打开存档、读取球员、球队、合同、赛程、已保存战术及部分统计。 |
+| [fm-tactics-lab](https://github.com/lqf0624/fm-tactics-lab) | 战术目录与字段参考 | 参考战术指令、角色目录及部分原生字段位置与结构，再对照对应版本的本地游戏文件校验。 |
+| [backports.zstd](https://github.com/rogdham/backports.zstd) / [Zstandard](https://github.com/meta/zstd) | backports.zstd 1.8.0，随包运行依赖 | 解压存档和比赛缓存中的压缩数据，底层采用 Zstandard。 |
+| [Unicorn](https://github.com/unicorn-engine/unicorn/tree/2.1.4) | 2.1.4，随包运行依赖 | 在隔离的虚拟 CPU 中模拟少量原生标量读取逻辑，辅助解码比赛球员统计。 |
+
+研究阶段还使用了 [Capstone](https://github.com/capstone-engine/capstone) 查看游戏文件中的机器指令，追踪字段、战术对象和修改队列。它属于研究工具，未随最终工具包分发，也不是运行本 Skill 所需的依赖。
+
+在这些项目的基础上，本项目将读取能力组织为面向 Agent 的按需 JSON 接口，补充了指定 FM27 构建的战术与比赛记录适配、来源和覆盖范围说明、结构交叉校验、本地路径发现与记忆，以及 Skill 指令和字段解释文档。
+
+各组件保留原有版权与许可；具体许可文件、分发说明和 Unicorn 源码归档见 [第三方组件说明](THIRD_PARTY_NOTICES.md)。
+
 ## 验证与打包
 
 ```powershell

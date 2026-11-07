@@ -10,3 +10,7 @@
 | [fm-tactics-lab](https://github.com/lqf0624/fm-tactics-lab) | 指令/角色目录和部分字段参考 | MIT；`references/licenses/fm-tactics-lab-LICENSE.txt` |
 
 Unicorn 对应源码归档 SHA256：`00567a70e323f749b419cd86bee4f9115beab7ebba32194581c090cbb7c59cff`。原有许可、来源与技术说明亦见 `references/maintenance.md`。游戏 DLL 由使用者自己的安装提供，本发布包不包含该文件。
+
+## 研究工具
+
+研究阶段使用了 [Capstone](https://github.com/capstone-engine/capstone) 查看机器指令，辅助追踪原生字段、战术对象及修改队列。最终工具包未分发 Capstone，其运行入口也不依赖它；这里作为研究工具致谢列出。
