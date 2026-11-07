@@ -1,0 +1,239 @@
+{
+  "player_field_schema": {
+    "goals": {
+      "offset": 139,
+      "format": "<B",
+      "scale": 1,
+      "evidence": "23 players / 445 roster records; exact integer season aggregate"
+    },
+    "assists": {
+      "offset": 159,
+      "format": "<B",
+      "scale": 1,
+      "evidence": "23 players / 445 roster records; exact integer season aggregate"
+    },
+    "shots": {
+      "offset": 144,
+      "format": "<B",
+      "scale": 1,
+      "evidence": "23 players / 445 roster records; exact integer season aggregate"
+    },
+    "shots_on_target": {
+      "offset": 145,
+      "format": "<B",
+      "scale": 1,
+      "evidence": "23 players / 445 roster records; exact integer season aggregate"
+    },
+    "shots_outside_box": {
+      "offset": 243,
+      "format": "<B",
+      "scale": 1,
+      "evidence": "23 players / 445 roster records; exact integer season aggregate"
+    },
+    "free_kick_shots": {
+      "offset": 244,
+      "format": "<B",
+      "scale": 1,
+      "evidence": "23 players / 445 roster records; exact integer season aggregate"
+    },
+    "passes_attempted": {
+      "offset": 186,
+      "format": "<B",
+      "scale": 1,
+      "evidence": "23 players / 445 roster records; exact integer season aggregate"
+    },
+    "passes_completed": {
+      "offset": 187,
+      "format": "<B",
+      "scale": 1,
+      "evidence": "23 players / 445 roster records; exact integer season aggregate"
+    },
+    "progressive_passes": {
+      "offset": 241,
+      "format": "<B",
+      "scale": 1,
+      "evidence": "23 players / 445 roster records; exact integer season aggregate"
+    },
+    "key_passes": {
+      "offset": 188,
+      "format": "<B",
+      "scale": 1,
+      "evidence": "23 players / 445 roster records; exact integer season aggregate"
+    },
+    "open_play_key_passes": {
+      "offset": 189,
+      "format": "<B",
+      "scale": 1,
+      "evidence": "23 players / 445 roster records; exact integer season aggregate"
+    },
+    "clear_cut_chances_created": {
+      "offset": 160,
+      "format": "<B",
+      "scale": 1,
+      "evidence": "23 players / 445 roster records; exact integer season aggregate"
+    },
+    "crosses_attempted": {
+      "offset": 181,
+      "format": "<B",
+      "scale": 1,
+      "evidence": "23 players / 445 roster records; exact integer season aggregate"
+    },
+    "crosses_completed": {
+      "offset": 182,
+      "format": "<B",
+      "scale": 1,
+      "evidence": "23 players / 445 roster records; exact integer season aggregate"
+    },
+    "dribbles": {
+      "offset": 161,
+      "format": "<B",
+      "scale": 1,
+      "evidence": "23 players / 445 roster records; exact integer season aggregate"
+    },
+    "offsides": {
+      "offset": 165,
+      "format": "<B",
+      "scale": 1,
+      "evidence": "23 players / 445 roster records; exact integer season aggregate"
+    },
+    "high_intensity_sprints": {
+      "offset": 245,
+      "format": "<B",
+      "scale": 1,
+      "evidence": "23 players / 445 roster records; exact integer season aggregate"
+    },
+    "aerial_challenges_attempted": {
+      "offset": 202,
+      "format": "<B",
+      "scale": 1,
+      "evidence": "23 players / 445 roster records; exact integer season aggregate"
+    },
+    "headers_won": {
+      "offset": 203,
+      "format": "<B",
+      "scale": 1,
+      "evidence": "23 players / 445 roster records; exact integer season aggregate"
+    },
+    "key_headers": {
+      "offset": 206,
+      "format": "<B",
+      "scale": 1,
+      "evidence": "23 players / 445 roster records; exact integer season aggregate"
+    },
+    "tackles_attempted": {
+      "offset": 198,
+      "format": "<B",
+      "scale": 1,
+      "evidence": "23 players / 445 roster records; exact integer season aggregate"
+    },
+    "tackles_completed": {
+      "offset": 199,
+      "format": "<B",
+      "scale": 1,
+      "evidence": "23 players / 445 roster records; exact integer season aggregate"
+    },
+    "key_tackles": {
+      "offset": 200,
+      "format": "<B",
+      "scale": 1,
+      "evidence": "23 players / 445 roster records; exact integer season aggregate"
+    },
+    "interceptions": {
+      "offset": 207,
+      "format": "<B",
+      "scale": 1,
+      "evidence": "23 players / 445 roster records; exact integer season aggregate"
+    },
+    "possession_won": {
+      "offset": 215,
+      "format": "<B",
+      "scale": 1,
+      "evidence": "23 players / 445 roster records; exact integer season aggregate"
+    },
+    "possession_lost": {
+      "offset": 216,
+      "format": "<B",
+      "scale": 1,
+      "evidence": "23 players / 445 roster records; exact integer season aggregate"
+    },
+    "blocks": {
+      "offset": 218,
+      "format": "<B",
+      "scale": 1,
+      "evidence": "23 players / 445 roster records; exact integer season aggregate"
+    },
+    "shots_blocked": {
+      "offset": 156,
+      "format": "<B",
+      "scale": 1,
+      "evidence": "23 players / 445 roster records; exact integer season aggregate"
+    },
+    "clearances": {
+      "offset": 217,
+      "format": "<B",
+      "scale": 1,
+      "evidence": "23 players / 445 roster records; exact integer season aggregate"
+    },
+    "fouls_made": {
+      "offset": 163,
+      "format": "<B",
+      "scale": 1,
+      "evidence": "23 players / 445 roster records; exact integer season aggregate"
+    },
+    "fouls_against": {
+      "offset": 164,
+      "format": "<B",
+      "scale": 1,
+      "evidence": "23 players / 445 roster records; exact integer season aggregate"
+    },
+    "yellow_cards": {
+      "offset": 166,
+      "format": "<B",
+      "scale": 1,
+      "evidence": "23 players / 445 roster records; exact integer season aggregate"
+    },
+    "mistakes_leading_to_goal": {
+      "offset": 208,
+      "format": "<B",
+      "scale": 1,
+      "evidence": "23 players / 445 roster records; exact integer season aggregate"
+    },
+    "expected_goals": {
+      "offset": 28,
+      "format": "<f",
+      "scale": 1,
+      "evidence": "23 season aggregates match exactly after each match is rounded to 0.01"
+    },
+    "non_penalty_expected_goals": {
+      "offset": 32,
+      "format": "<f",
+      "scale": 1,
+      "evidence": "23 season aggregates match exactly after each match is rounded to 0.01"
+    },
+    "expected_assists": {
+      "offset": 36,
+      "format": "<f",
+      "scale": 1,
+      "evidence": "23 season aggregates match exactly after each match is rounded to 0.01"
+    },
+    "distance_km": {
+      "offset": 104,
+      "format": "<f",
+      "scale": 0.001,
+      "evidence": "23 season aggregates match exactly after each match is floored to 0.1 km"
+    },
+    "red_cards": {
+      "offset": 167,
+      "format": "<B",
+      "scale": 1,
+      "evidence": "native event reader; low-variation season column cannot uniquely identify offset"
+    },
+    "open_play_crosses_attempted": {
+      "offset": 181,
+      "subtract_offset": 183,
+      "format": "<B",
+      "scale": 1,
+      "evidence": "23 exact season aggregates; total crosses minus set-piece crosses"
+    }
+  }
+}

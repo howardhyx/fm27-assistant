@@ -1,0 +1,1768 @@
+[
+  {
+    "Assembly": "FM.UI.dll",
+    "Type": "FM.UI.PlayerInstruction",
+    "Values": [
+      {
+        "Name": "PI_NONE",
+        "Value": 0
+      },
+      {
+        "Name": "PI_PASS_SHORTER",
+        "Value": 1
+      },
+      {
+        "Name": "PI_PASS_MORE_DIRECT",
+        "Value": 2
+      },
+      {
+        "Name": "PI_TAKE_MORE_RISKS",
+        "Value": 3
+      },
+      {
+        "Name": "PI_TAKE_FEWER_RISKS",
+        "Value": 4
+      },
+      {
+        "Name": "PI_CROSS_OFTEN",
+        "Value": 5
+      },
+      {
+        "Name": "PI_CROSS_LESS_OFTEN",
+        "Value": 6
+      },
+      {
+        "Name": "PI_CROSS_FROM_DEEP",
+        "Value": 7
+      },
+      {
+        "Name": "PI_CROSS_FROM_BYLINE",
+        "Value": 8
+      },
+      {
+        "Name": "PI_CROSS_TO_NEAR_POST",
+        "Value": 9
+      },
+      {
+        "Name": "PI_CROSS_TO_FAR_POST",
+        "Value": 10
+      },
+      {
+        "Name": "PI_CROSS_TO_CENTRE",
+        "Value": 11
+      },
+      {
+        "Name": "PI_CROSS_TO_TARGET_MAN",
+        "Value": 12
+      },
+      {
+        "Name": "PI_DRIBBLE_MORE",
+        "Value": 13
+      },
+      {
+        "Name": "PI_DRIBBLE_LESS",
+        "Value": 14
+      },
+      {
+        "Name": "PI_RUN_WIDE_WITH_BALL",
+        "Value": 15
+      },
+      {
+        "Name": "PI_CUT_INSIDE_WITH_BALL",
+        "Value": 16
+      },
+      {
+        "Name": "PI_HOLD_UP_BALL",
+        "Value": 17
+      },
+      {
+        "Name": "PI_SHOOT_MORE",
+        "Value": 18
+      },
+      {
+        "Name": "PI_SHOOT_LESS",
+        "Value": 19
+      },
+      {
+        "Name": "PI_BE_MORE_EXPRESSIVE",
+        "Value": 20
+      },
+      {
+        "Name": "PI_BE_MORE_DISCIPLINED",
+        "Value": 21
+      },
+      {
+        "Name": "PI_GET_FORWARD_OFTEN",
+        "Value": 22
+      },
+      {
+        "Name": "PI_HOLD_POSITION",
+        "Value": 23
+      },
+      {
+        "Name": "PI_ROAM_FROM_POSITION",
+        "Value": 24
+      },
+      {
+        "Name": "PI_STAY_WIDER",
+        "Value": 25
+      },
+      {
+        "Name": "PI_PLAY_NARROW",
+        "Value": 26
+      },
+      {
+        "Name": "PI_MOVE_INTO_CHANNELS",
+        "Value": 27
+      },
+      {
+        "Name": "PI_SWITCH_POSITION",
+        "Value": 28
+      },
+      {
+        "Name": "PI_HIGHER_PRESSING_INTENSITY",
+        "Value": 29
+      },
+      {
+        "Name": "PI_LOWER_PRESSING_INTENSITY",
+        "Value": 30
+      },
+      {
+        "Name": "PI_GET_STUCK_IN",
+        "Value": 31
+      },
+      {
+        "Name": "PI_STAY_ON_FEET",
+        "Value": 32
+      },
+      {
+        "Name": "PI_MARK_TIGHTER",
+        "Value": 33
+      },
+      {
+        "Name": "PI_MARK_SPECIFIC_PLAYER",
+        "Value": 34
+      },
+      {
+        "Name": "PI_MARK_SPECIFIC_POSITION",
+        "Value": 35
+      },
+      {
+        "Name": "PI_ATTACK_BOX_SIDE_CENTRE",
+        "Value": 36
+      },
+      {
+        "Name": "PI_ATTACK_BOX_SIDE_LEFT",
+        "Value": 37
+      },
+      {
+        "Name": "PI_ATTACK_BOX_SIDE_RIGHT",
+        "Value": 38
+      },
+      {
+        "Name": "PI_ATTACK_BOX_SIDE_NEAR_POST",
+        "Value": 39
+      },
+      {
+        "Name": "PI_ATTACK_BOX_SIDE_FAR_POST",
+        "Value": 40
+      },
+      {
+        "Name": "PI_ATTACK_FRONT_ZONE",
+        "Value": 41
+      },
+      {
+        "Name": "PI_ATTACK_BACK_ZONE",
+        "Value": 42
+      }
+    ]
+  },
+  {
+    "Assembly": "FM.UI.dll",
+    "Type": "FM.UI.PlayerInstructionGrouping",
+    "Values": [
+      {
+        "Name": "Invalid",
+        "Value": -1
+      },
+      {
+        "Name": "AttackingWidth",
+        "Value": 0
+      },
+      {
+        "Name": "DribblingDirection",
+        "Value": 1
+      },
+      {
+        "Name": "DribblingFrequency",
+        "Value": 2
+      },
+      {
+        "Name": "ForwardRuns",
+        "Value": 3
+      },
+      {
+        "Name": "FreedomOfMovement",
+        "Value": 4
+      },
+      {
+        "Name": "HoldUpBall",
+        "Value": 5
+      },
+      {
+        "Name": "Shooting",
+        "Value": 6
+      },
+      {
+        "Name": "PassingStrategy",
+        "Value": 7
+      },
+      {
+        "Name": "PassingRisk",
+        "Value": 8
+      },
+      {
+        "Name": "CrossingStrategy",
+        "Value": 9
+      },
+      {
+        "Name": "CrossFrom",
+        "Value": 10
+      },
+      {
+        "Name": "TriggerPress",
+        "Value": 11
+      },
+      {
+        "Name": "Marking",
+        "Value": 12
+      },
+      {
+        "Name": "Tackling",
+        "Value": 13
+      },
+      {
+        "Name": "MarkingTarget",
+        "Value": 14
+      },
+      {
+        "Name": "AttackBoxSide",
+        "Value": 15
+      },
+      {
+        "Name": "AttackBoxDepth",
+        "Value": 16
+      }
+    ]
+  },
+  {
+    "Assembly": "FM.UI.dll",
+    "Type": "FM.UI.InPossessionRole",
+    "Values": [
+      {
+        "Name": "NoRole",
+        "Value": 0
+      },
+      {
+        "Name": "Goalkeeper",
+        "Value": 1
+      },
+      {
+        "Name": "BallPlayingGoalkeeper",
+        "Value": 4096
+      },
+      {
+        "Name": "NoNonsenseGoalkeeper",
+        "Value": 9007199254740992
+      },
+      {
+        "Name": "FullBack",
+        "Value": 4
+      },
+      {
+        "Name": "WingBack",
+        "Value": 8
+      },
+      {
+        "Name": "NoNonsenseFullBack",
+        "Value": 68719476736
+      },
+      {
+        "Name": "AdvancedWingBack",
+        "Value": 274877906944
+      },
+      {
+        "Name": "InsideWingBack",
+        "Value": 17592186044416
+      },
+      {
+        "Name": "InsideFullBack",
+        "Value": 4503599627370496
+      },
+      {
+        "Name": "PlaymakingWingBack",
+        "Value": 36028797018963968
+      },
+      {
+        "Name": "CentreBack",
+        "Value": 2
+      },
+      {
+        "Name": "AdvancedCentreBack",
+        "Value": 16384
+      },
+      {
+        "Name": "BallPlayingCentreBack",
+        "Value": 16777216
+      },
+      {
+        "Name": "NoNonsenseCentreBack",
+        "Value": 536870912
+      },
+      {
+        "Name": "WideCentreBack",
+        "Value": 2251799813685248
+      },
+      {
+        "Name": "OverlappingCentreBack",
+        "Value": 18014398509481984
+      },
+      {
+        "Name": "MidfieldPlaymaker",
+        "Value": 144115188075855872
+      },
+      {
+        "Name": "DefensiveMidfielder",
+        "Value": 16
+      },
+      {
+        "Name": "CentralMidfielder",
+        "Value": 32
+      },
+      {
+        "Name": "DeepLyingPlaymaker",
+        "Value": 32768
+      },
+      {
+        "Name": "BoxToBoxMidfielder",
+        "Value": 65536
+      },
+      {
+        "Name": "BallWinningMidfielder",
+        "Value": 268435456
+      },
+      {
+        "Name": "Anchor",
+        "Value": 8589934592
+      },
+      {
+        "Name": "HalfBack",
+        "Value": 34359738368
+      },
+      {
+        "Name": "Enganche",
+        "Value": 137438953472
+      },
+      {
+        "Name": "Regista",
+        "Value": 549755813888
+      },
+      {
+        "Name": "BoxToBoxPlaymaker",
+        "Value": 70368744177664
+      },
+      {
+        "Name": "Mezzala",
+        "Value": 140737488355328
+      },
+      {
+        "Name": "SegundoVolante",
+        "Value": 1125899906842624
+      },
+      {
+        "Name": "WideMidfielder",
+        "Value": 64
+      },
+      {
+        "Name": "Winger",
+        "Value": 128
+      },
+      {
+        "Name": "AttackingMidfielder",
+        "Value": 512
+      },
+      {
+        "Name": "ChannelMidfielder",
+        "Value": 72057594037927936
+      },
+      {
+        "Name": "AdvancedPlaymaker",
+        "Value": 131072
+      },
+      {
+        "Name": "InsideForward",
+        "Value": 134217728
+      },
+      {
+        "Name": "InsideWinger",
+        "Value": 562949953421312
+      },
+      {
+        "Name": "DefensiveWinger",
+        "Value": 1073741824
+      },
+      {
+        "Name": "FreeRole",
+        "Value": 4294967296
+      },
+      {
+        "Name": "WideTargetForward",
+        "Value": 4398046511104
+      },
+      {
+        "Name": "PlaymakingWinger",
+        "Value": 8796093022208
+      },
+      {
+        "Name": "WideForward",
+        "Value": 35184372088832
+      },
+      {
+        "Name": "WideCentralMidfielder",
+        "Value": 281474976710656
+      },
+      {
+        "Name": "DeepLyingForward",
+        "Value": 1024
+      },
+      {
+        "Name": "CentreForward",
+        "Value": 2048
+      },
+      {
+        "Name": "TargetForward",
+        "Value": 262144
+      },
+      {
+        "Name": "Poacher",
+        "Value": 524288
+      },
+      {
+        "Name": "CompleteForward",
+        "Value": 1048576
+      },
+      {
+        "Name": "ChannelForward",
+        "Value": 2147483648
+      },
+      {
+        "Name": "FalseNine",
+        "Value": 1099511627776
+      },
+      {
+        "Name": "SecondStriker",
+        "Value": 2199023255552
+      },
+      {
+        "Name": "DefendDuty",
+        "Value": 2097152
+      },
+      {
+        "Name": "DefendStopperDuty",
+        "Value": 33554432
+      },
+      {
+        "Name": "DefendCoveringDuty",
+        "Value": 67108864
+      },
+      {
+        "Name": "SupportDuty",
+        "Value": 4194304
+      },
+      {
+        "Name": "AttackDuty",
+        "Value": 8388608
+      },
+      {
+        "Name": "FloatDuty",
+        "Value": 17179869184
+      }
+    ]
+  },
+  {
+    "Assembly": "FM.UI.dll",
+    "Type": "FM.UI.OutOfPossessionRole",
+    "Values": [
+      {
+        "Name": "OPDefendDuty",
+        "Value": 2097152
+      },
+      {
+        "Name": "OPSupportDuty",
+        "Value": 4194304
+      },
+      {
+        "Name": "OPAttackDuty",
+        "Value": 8388608
+      },
+      {
+        "Name": "OPDefendStopperDuty",
+        "Value": 33554432
+      },
+      {
+        "Name": "OPDefendCoveringDuty",
+        "Value": 67108864
+      },
+      {
+        "Name": "OPFloatDuty",
+        "Value": 17179869184
+      },
+      {
+        "Name": "OPNoRole",
+        "Value": 0
+      },
+      {
+        "Name": "OPGoalkeeper",
+        "Value": 1
+      },
+      {
+        "Name": "OPSweeperKeeper",
+        "Value": 2
+      },
+      {
+        "Name": "OPLineKeeper",
+        "Value": 4
+      },
+      {
+        "Name": "OPCentreBack",
+        "Value": 8
+      },
+      {
+        "Name": "OPStoppingCentreBack",
+        "Value": 16
+      },
+      {
+        "Name": "OPCoveringCentreBack",
+        "Value": 32
+      },
+      {
+        "Name": "OPWideCentreBack",
+        "Value": 64
+      },
+      {
+        "Name": "OPStoppingWideCentreBack",
+        "Value": 128
+      },
+      {
+        "Name": "OPCoveringWideCentreBack",
+        "Value": 256
+      },
+      {
+        "Name": "OPFullBack",
+        "Value": 512
+      },
+      {
+        "Name": "OPPressingFullBack",
+        "Value": 1024
+      },
+      {
+        "Name": "OPHoldingFullBack",
+        "Value": 2048
+      },
+      {
+        "Name": "OPWingBack",
+        "Value": 4096
+      },
+      {
+        "Name": "OPPressingWingBack",
+        "Value": 8192
+      },
+      {
+        "Name": "OPHoldingWingBack",
+        "Value": 16384
+      },
+      {
+        "Name": "OPDefensiveMidfielder",
+        "Value": 32768
+      },
+      {
+        "Name": "OPDroppingDefensiveMidfielder",
+        "Value": 65536
+      },
+      {
+        "Name": "OPPressingDefensiveMidfielder",
+        "Value": 131072
+      },
+      {
+        "Name": "OPScreeningDefensiveMidfielder",
+        "Value": 262144
+      },
+      {
+        "Name": "OPWideCoverDefensiveMidfielder",
+        "Value": 524288
+      },
+      {
+        "Name": "OPCentralMidfielder",
+        "Value": 1048576
+      },
+      {
+        "Name": "OPPressingCentralMidfielder",
+        "Value": 134217728
+      },
+      {
+        "Name": "OPScreeningCentralMidfielder",
+        "Value": 268435456
+      },
+      {
+        "Name": "OPWideCoverCentralMidfielder",
+        "Value": 536870912
+      },
+      {
+        "Name": "OPAttackingMidfielder",
+        "Value": 1073741824
+      },
+      {
+        "Name": "OPTrackingAttackingMidfielder",
+        "Value": 2147483648
+      },
+      {
+        "Name": "OPCentralOutletAttackingMidfielder",
+        "Value": 4294967296
+      },
+      {
+        "Name": "OPSplittingOutletAttackingMidfielder",
+        "Value": 8589934592
+      },
+      {
+        "Name": "OPWideMidfielder",
+        "Value": 34359738368
+      },
+      {
+        "Name": "OPTrackingWideMidfielder",
+        "Value": 68719476736
+      },
+      {
+        "Name": "OPWideOutletWideMidfielder",
+        "Value": 137438953472
+      },
+      {
+        "Name": "OPWinger",
+        "Value": 274877906944
+      },
+      {
+        "Name": "OPTrackingWinger",
+        "Value": 549755813888
+      },
+      {
+        "Name": "OPInsideOutletWinger",
+        "Value": 1099511627776
+      },
+      {
+        "Name": "OPWideOutletWinger",
+        "Value": 2199023255552
+      },
+      {
+        "Name": "OPCentreForward",
+        "Value": 4398046511104
+      },
+      {
+        "Name": "OPTrackingCentreForward",
+        "Value": 8796093022208
+      },
+      {
+        "Name": "OPCentralOutletCentreForward",
+        "Value": 17592186044416
+      },
+      {
+        "Name": "OPSplittingOutletCentreForward",
+        "Value": 35184372088832
+      }
+    ]
+  },
+  {
+    "Assembly": "FM.UI.dll",
+    "Type": "FM.UI.TacticMentalities",
+    "Values": [
+      {
+        "Name": "None",
+        "Value": 0
+      },
+      {
+        "Name": "VeryDefensive",
+        "Value": 1
+      },
+      {
+        "Name": "Defensive",
+        "Value": 2
+      },
+      {
+        "Name": "Cautious",
+        "Value": 3
+      },
+      {
+        "Name": "Balanced",
+        "Value": 4
+      },
+      {
+        "Name": "Positive",
+        "Value": 5
+      },
+      {
+        "Name": "Attacking",
+        "Value": 6
+      },
+      {
+        "Name": "VeryAttacking",
+        "Value": 7
+      }
+    ]
+  },
+  {
+    "Assembly": "FM.UI.dll",
+    "Type": "FM.UI.TacticSection",
+    "Values": [
+      {
+        "Name": "Tactics",
+        "Value": 0
+      },
+      {
+        "Name": "SetPieces",
+        "Value": 1
+      },
+      {
+        "Name": "Penalties",
+        "Value": 2
+      },
+      {
+        "Name": "OppositionInstructions",
+        "Value": 3
+      }
+    ]
+  },
+  {
+    "Assembly": "FM.UI.dll",
+    "Type": "FM.UI.TacticTeamInstructions",
+    "Values": [
+      {
+        "Name": "Invalid",
+        "Value": -1
+      },
+      {
+        "Name": "Formation",
+        "Value": 0
+      },
+      {
+        "Name": "PassingDirectness",
+        "Value": 1
+      },
+      {
+        "Name": "PassingVerticality",
+        "Value": 2
+      },
+      {
+        "Name": "AttackingTransition",
+        "Value": 3
+      },
+      {
+        "Name": "TeamWidth",
+        "Value": 4
+      },
+      {
+        "Name": "CreativeFreedom",
+        "Value": 5
+      },
+      {
+        "Name": "PlayForSetPieces",
+        "Value": 6
+      },
+      {
+        "Name": "TimeWasting",
+        "Value": 7
+      },
+      {
+        "Name": "LineOfEngagement",
+        "Value": 8
+      },
+      {
+        "Name": "DefensiveLine",
+        "Value": 9
+      },
+      {
+        "Name": "PressingTrigger",
+        "Value": 10
+      },
+      {
+        "Name": "DefensiveTransition",
+        "Value": 11
+      },
+      {
+        "Name": "Tackling",
+        "Value": 12
+      },
+      {
+        "Name": "TacticalStyle",
+        "Value": 13
+      },
+      {
+        "Name": "Mentality",
+        "Value": 14
+      },
+      {
+        "Name": "DefensiveLineBehaviour",
+        "Value": 15
+      },
+      {
+        "Name": "GoalkeeperDistributionTarget",
+        "Value": 16
+      },
+      {
+        "Name": "GoalkeeperDistributionSpeed",
+        "Value": 17
+      },
+      {
+        "Name": "Patience",
+        "Value": 18
+      },
+      {
+        "Name": "Dribbling",
+        "Value": 19
+      },
+      {
+        "Name": "PassReception",
+        "Value": 20
+      },
+      {
+        "Name": "Tempo",
+        "Value": 21
+      },
+      {
+        "Name": "CrossEngagement",
+        "Value": 22
+      },
+      {
+        "Name": "PreventShortGKDistribution",
+        "Value": 23
+      },
+      {
+        "Name": "BuildUpStrategy",
+        "Value": 24
+      },
+      {
+        "Name": "PressingTrap",
+        "Value": 25
+      },
+      {
+        "Name": "CrossingStyle",
+        "Value": 26
+      },
+      {
+        "Name": "ShotsFromDistance",
+        "Value": 27
+      },
+      {
+        "Name": "SupportingRuns",
+        "Value": 28
+      },
+      {
+        "Name": "GoalKicks",
+        "Value": 29
+      },
+      {
+        "Name": "ProgressThrough",
+        "Value": 30
+      },
+      {
+        "Name": "SupportingRunsSecondary",
+        "Value": 31
+      },
+      {
+        "Name": "GoalkeeperUpForAttackingSetPieces",
+        "Value": 32
+      }
+    ]
+  },
+  {
+    "Assembly": "FM.UI.dll",
+    "Type": "FM.UI.TeamInstructionPhaseID",
+    "Values": [
+      {
+        "Name": "Invalid",
+        "Value": -1
+      },
+      {
+        "Name": "InPossessionDefault",
+        "Value": 0
+      },
+      {
+        "Name": "FinalThird",
+        "Value": 1
+      },
+      {
+        "Name": "Progression",
+        "Value": 2
+      },
+      {
+        "Name": "BuildUp",
+        "Value": 3
+      },
+      {
+        "Name": "OutOfPossessionDefault",
+        "Value": 4
+      },
+      {
+        "Name": "HighPress",
+        "Value": 5
+      },
+      {
+        "Name": "MidBlock",
+        "Value": 6
+      },
+      {
+        "Name": "LowBlock",
+        "Value": 7
+      },
+      {
+        "Name": "SupportingRuns",
+        "Value": 8
+      },
+      {
+        "Name": "Dribbling",
+        "Value": 9
+      },
+      {
+        "Name": "PressingTrap",
+        "Value": 10
+      },
+      {
+        "Name": "ProgressThrough",
+        "Value": 11
+      },
+      {
+        "Name": "GKDistributeTo",
+        "Value": 12
+      }
+    ]
+  },
+  {
+    "Assembly": "FM.UI.dll",
+    "Type": "FM.UI.TacticTeamInstructionOptions",
+    "Values": [
+      {
+        "Name": "None",
+        "Value": 0
+      },
+      {
+        "Name": "PassingStyleMuchShorter",
+        "Value": 1985571685
+      },
+      {
+        "Name": "PassingStyleShorter",
+        "Value": 1146434657
+      },
+      {
+        "Name": "PassingDirectnessNone",
+        "Value": 1483944022
+      },
+      {
+        "Name": "PassingStyleMoreDirect",
+        "Value": 2019653698
+      },
+      {
+        "Name": "PassingStyleMuchMoreDirect",
+        "Value": 1867543624
+      },
+      {
+        "Name": "MuchLowerTempo",
+        "Value": 1498756423
+      },
+      {
+        "Name": "LowerTempo",
+        "Value": 1311996258
+      },
+      {
+        "Name": "TempoNone",
+        "Value": 1496610426
+      },
+      {
+        "Name": "HigherTempo",
+        "Value": 1345339954
+      },
+      {
+        "Name": "MuchHigherTempo",
+        "Value": 543778113
+      },
+      {
+        "Name": "WasteTimeLessOften",
+        "Value": 1315850041
+      },
+      {
+        "Name": "WasteTimeStandard",
+        "Value": 1329030726
+      },
+      {
+        "Name": "WasteTimeMoreOften",
+        "Value": 1733973351
+      },
+      {
+        "Name": "AttackTransitionCounter",
+        "Value": 1734436950
+      },
+      {
+        "Name": "AttackingTransitionNone",
+        "Value": 846284410
+      },
+      {
+        "Name": "AttackTransitionHoldShape",
+        "Value": 1450726497
+      },
+      {
+        "Name": "SetupMuchNarrowerInPossession",
+        "Value": 1716541542
+      },
+      {
+        "Name": "SetupNarrowerInPossession",
+        "Value": 1111652208
+      },
+      {
+        "Name": "TeamWidthNone",
+        "Value": 1951095402
+      },
+      {
+        "Name": "SetupWiderInPossession",
+        "Value": 1244744824
+      },
+      {
+        "Name": "SetupMuchWiderInPossession",
+        "Value": 1347573861
+      },
+      {
+        "Name": "PlayForSetPieces",
+        "Value": 896626297
+      },
+      {
+        "Name": "PlayForSetPiecesNone",
+        "Value": 1869829494
+      },
+      {
+        "Name": "GoalkeeperUpForAttackingSetPieces",
+        "Value": 1968654134
+      },
+      {
+        "Name": "GoalkeeperUpForAttackingSetPiecesNone",
+        "Value": 1466265977
+      },
+      {
+        "Name": "BeMoreExpressive",
+        "Value": 1297429358
+      },
+      {
+        "Name": "CreativeFreedomNone",
+        "Value": 1934574368
+      },
+      {
+        "Name": "BeMoreDisciplined",
+        "Value": 1752052821
+      },
+      {
+        "Name": "PlayThroughPress",
+        "Value": 1365857100
+      },
+      {
+        "Name": "BuildUpStrategyNone",
+        "Value": 1732331848
+      },
+      {
+        "Name": "BypassPress",
+        "Value": 1702379875
+      },
+      {
+        "Name": "GoalKicksShort",
+        "Value": 1730167140
+      },
+      {
+        "Name": "GoalKicksNone",
+        "Value": 1248478788
+      },
+      {
+        "Name": "GoalKicksLong",
+        "Value": 1749839698
+      },
+      {
+        "Name": "GKDistributionPaceSlow",
+        "Value": 1936095309
+      },
+      {
+        "Name": "GKDistributionPaceNone",
+        "Value": 842232368
+      },
+      {
+        "Name": "GKDistributionPaceQuick",
+        "Value": 1380137303
+      },
+      {
+        "Name": "GKDistributionTargetNone",
+        "Value": 1398290509
+      },
+      {
+        "Name": "GKDistributionTargetCentrebacks",
+        "Value": 1097811032
+      },
+      {
+        "Name": "GKDistributionTargetFullbacks",
+        "Value": 1732531317
+      },
+      {
+        "Name": "GKDistributionTargetFlanks",
+        "Value": 2001361485
+      },
+      {
+        "Name": "GKDistributionTargetPlaymaker",
+        "Value": 543316536
+      },
+      {
+        "Name": "GKDistributionTargetTargetman",
+        "Value": 1362654530
+      },
+      {
+        "Name": "GKDistributionTargetClearOppositionDefence",
+        "Value": 1664119088
+      },
+      {
+        "Name": "LookForUnderlapLeft",
+        "Value": 1246451814
+      },
+      {
+        "Name": "LookForUnderlapRight",
+        "Value": 894725200
+      },
+      {
+        "Name": "LookForUnderlapBoth",
+        "Value": 1848850767
+      },
+      {
+        "Name": "LookForUnderlapNone",
+        "Value": 1128871265
+      },
+      {
+        "Name": "LookForOverlapBoth",
+        "Value": 809924212
+      },
+      {
+        "Name": "LookForOverlapLeft",
+        "Value": 1496789296
+      },
+      {
+        "Name": "LookForOverlapRight",
+        "Value": 1484157235
+      },
+      {
+        "Name": "LookForOverlapNone",
+        "Value": 1700947790
+      },
+      {
+        "Name": "RunAtDefence",
+        "Value": 1313559094
+      },
+      {
+        "Name": "DribblingNone",
+        "Value": 1480870768
+      },
+      {
+        "Name": "DribbleLess",
+        "Value": 946684999
+      },
+      {
+        "Name": "FocusPlayDownTheLeftFlank",
+        "Value": 2001548153
+      },
+      {
+        "Name": "FocusPlayDownTheRightFlank",
+        "Value": 1299723626
+      },
+      {
+        "Name": "FocusPlayDownTheMiddle",
+        "Value": 1465200750
+      },
+      {
+        "Name": "FocusPlayDownBothFlanks",
+        "Value": 1849981002
+      },
+      {
+        "Name": "ProgressThroughNone",
+        "Value": 1800754547
+      },
+      {
+        "Name": "PassingReceptionIntoSpace",
+        "Value": 1987666283
+      },
+      {
+        "Name": "PassReceptionNone",
+        "Value": 1196126273
+      },
+      {
+        "Name": "PassingReceptionIntoFeet",
+        "Value": 1817268034
+      },
+      {
+        "Name": "WorkBallIntoBox",
+        "Value": 1196903216
+      },
+      {
+        "Name": "PatienceNone",
+        "Value": 1364668513
+      },
+      {
+        "Name": "HitEarlyCrosses",
+        "Value": 844190326
+      },
+      {
+        "Name": "ShotsFromDistanceShootOnSight",
+        "Value": 1799907952
+      },
+      {
+        "Name": "ShotsFromDistanceNone",
+        "Value": 1951290700
+      },
+      {
+        "Name": "ShotsFromDistanceStayPatient",
+        "Value": 2021157752
+      },
+      {
+        "Name": "CrossingNone",
+        "Value": 1817334343
+      },
+      {
+        "Name": "LowCrosses",
+        "Value": 542589235
+      },
+      {
+        "Name": "FloatCrosses",
+        "Value": 1649964405
+      },
+      {
+        "Name": "WhippedCrosses",
+        "Value": 1850439286
+      },
+      {
+        "Name": "LineOfEngagementHigh",
+        "Value": 2033537859
+      },
+      {
+        "Name": "LineOfEngagementMid",
+        "Value": 1196979288
+      },
+      {
+        "Name": "LineOfEngagementLow",
+        "Value": 927550517
+      },
+      {
+        "Name": "DefensiveLineMuchHigher",
+        "Value": 1735747406
+      },
+      {
+        "Name": "DefensiveLineHigherDefensiveLine",
+        "Value": 1329018200
+      },
+      {
+        "Name": "DefensiveLineStandard",
+        "Value": 894978671
+      },
+      {
+        "Name": "DefensiveLineDeeper",
+        "Value": 807423041
+      },
+      {
+        "Name": "DefensiveLineMuchDeeper",
+        "Value": 2003456321
+      },
+      {
+        "Name": "HoldLine",
+        "Value": 825575765
+      },
+      {
+        "Name": "DefensiveLineSecondaryStandard",
+        "Value": 1397124971
+      },
+      {
+        "Name": "DropOff",
+        "Value": 1466132292
+      },
+      {
+        "Name": "PressingIntensityMuchLower",
+        "Value": 1500664391
+      },
+      {
+        "Name": "PressingIntensityLower",
+        "Value": 1985168495
+      },
+      {
+        "Name": "PressingIntensityNone",
+        "Value": 1313689463
+      },
+      {
+        "Name": "PressingIntensityHigher",
+        "Value": 2000905329
+      },
+      {
+        "Name": "PressingIntensityMuchHigher",
+        "Value": 1450268022
+      },
+      {
+        "Name": "DefenceTransitionCounterpress",
+        "Value": 928473934
+      },
+      {
+        "Name": "DefensiveTransitionNone",
+        "Value": 1396068403
+      },
+      {
+        "Name": "DefenceTransitionRegroup",
+        "Value": 2001753209
+      },
+      {
+        "Name": "GetStuckIn",
+        "Value": 1498428227
+      },
+      {
+        "Name": "TacklingNone",
+        "Value": 1297249398
+      },
+      {
+        "Name": "StayOnFeet",
+        "Value": 896480825
+      },
+      {
+        "Name": "PreventShortGKDistribution",
+        "Value": 1748587383
+      },
+      {
+        "Name": "PreventShortGKDistributionNone",
+        "Value": 1667524405
+      },
+      {
+        "Name": "PressingTrapIn",
+        "Value": 1870092139
+      },
+      {
+        "Name": "PressingTrapNone",
+        "Value": 844782149
+      },
+      {
+        "Name": "PressingTrapOut",
+        "Value": 1381658469
+      },
+      {
+        "Name": "CrossStop",
+        "Value": 1684615797
+      },
+      {
+        "Name": "CrossEngagementNone",
+        "Value": 1097682775
+      },
+      {
+        "Name": "CrossInvite",
+        "Value": 1280010857
+      }
+    ]
+  },
+  {
+    "Assembly": "FM.UI.dll",
+    "Type": "FM.UI.TacticalStyles",
+    "Values": [
+      {
+        "Name": "Invalid",
+        "Value": -1
+      },
+      {
+        "Name": "ControlPossession",
+        "Value": 0
+      },
+      {
+        "Name": "Gegenpress",
+        "Value": 1
+      },
+      {
+        "Name": "TikiTaka",
+        "Value": 2
+      },
+      {
+        "Name": "VerticalTikiTaka",
+        "Value": 3
+      },
+      {
+        "Name": "WingPlay",
+        "Value": 4
+      },
+      {
+        "Name": "RouteOne",
+        "Value": 5
+      },
+      {
+        "Name": "FluidCounterAttack",
+        "Value": 6
+      },
+      {
+        "Name": "DirectCounterAttack",
+        "Value": 7
+      },
+      {
+        "Name": "Catenaccio",
+        "Value": 8
+      },
+      {
+        "Name": "ParkTheBus",
+        "Value": 9
+      },
+      {
+        "Name": "BlankSlate",
+        "Value": 10
+      },
+      {
+        "Name": "Max",
+        "Value": 11
+      }
+    ]
+  },
+  {
+    "Assembly": "FM.UI.dll",
+    "Type": "FM.UI.TacticalTweak",
+    "Values": [
+      {
+        "Name": "TakeABreather",
+        "Value": 0
+      },
+      {
+        "Name": "PlayOutTheBack",
+        "Value": 1
+      },
+      {
+        "Name": "ThrowTheKitchenSink",
+        "Value": 2
+      },
+      {
+        "Name": "LockItDown",
+        "Value": 3
+      },
+      {
+        "Name": "GkUpForSetPieces",
+        "Value": 4
+      },
+      {
+        "Name": "GoLong",
+        "Value": 5
+      },
+      {
+        "Name": "PlayWithMoreUrgency",
+        "Value": 6
+      },
+      {
+        "Name": "PlayWithMorePatience",
+        "Value": 7
+      },
+      {
+        "Name": "GetPhysical",
+        "Value": 8
+      },
+      {
+        "Name": "ExploitTheWidth",
+        "Value": 9
+      },
+      {
+        "Name": "GoNarrower",
+        "Value": 10
+      },
+      {
+        "Name": "Disrupt",
+        "Value": 11
+      },
+      {
+        "Name": "PressLessAggressively",
+        "Value": 12
+      },
+      {
+        "Name": "PressAggressively",
+        "Value": 13
+      },
+      {
+        "Name": "KeepItSimple",
+        "Value": 14
+      },
+      {
+        "Name": "MakeSomethingHappen",
+        "Value": 15
+      },
+      {
+        "Name": "ExpressYourself",
+        "Value": 16
+      },
+      {
+        "Name": "StickToThePlan",
+        "Value": 17
+      },
+      {
+        "Name": "EngageYourOpponent",
+        "Value": 18
+      },
+      {
+        "Name": "EaseOff",
+        "Value": 19
+      },
+      {
+        "Name": "SwapWings",
+        "Value": 20
+      },
+      {
+        "Name": "Invalid",
+        "Value": 255
+      }
+    ]
+  },
+  {
+    "Assembly": "FM.UI.dll",
+    "Type": "FM.UI.TacticalTweakAxis",
+    "Values": [
+      {
+        "Name": "Invalid",
+        "Value": -1
+      },
+      {
+        "Name": "Team",
+        "Value": 0
+      },
+      {
+        "Name": "Individual",
+        "Value": 1
+      }
+    ]
+  },
+  {
+    "Assembly": "FM.UI.dll",
+    "Type": "FM.UI.TacticalTweakCategory",
+    "Values": [
+      {
+        "Name": "None",
+        "Value": 0
+      },
+      {
+        "Name": "Goalkeeper",
+        "Value": 1
+      },
+      {
+        "Name": "Defender",
+        "Value": 2
+      },
+      {
+        "Name": "Midfielder",
+        "Value": 4
+      },
+      {
+        "Name": "Forward",
+        "Value": 8
+      },
+      {
+        "Name": "Outfield",
+        "Value": 14
+      },
+      {
+        "Name": "All",
+        "Value": 15
+      }
+    ]
+  },
+  {
+    "Assembly": "FM.UI.dll",
+    "Type": "FM.UI.TacticalTweakPendingOpKind",
+    "Values": [
+      {
+        "Name": "None",
+        "Value": 0
+      },
+      {
+        "Name": "Apply",
+        "Value": 1
+      },
+      {
+        "Name": "Remove",
+        "Value": 2
+      }
+    ]
+  },
+  {
+    "Assembly": "FM.UI.dll",
+    "Type": "FM.UI.TacticalTweakResetScope",
+    "Values": [
+      {
+        "Name": "Team",
+        "Value": 0
+      },
+      {
+        "Name": "Individual",
+        "Value": 1
+      },
+      {
+        "Name": "All",
+        "Value": 2
+      }
+    ]
+  },
+  {
+    "Assembly": "FM.UI.dll",
+    "Type": "FM.UI.TacticalTweakOrigin",
+    "Values": [
+      {
+        "Name": "Dropdown",
+        "Value": 0
+      },
+      {
+        "Name": "Tactics",
+        "Value": 1
+      },
+      {
+        "Name": "Dugout",
+        "Value": 2
+      }
+    ]
+  },
+  {
+    "Assembly": "FM.UI.dll",
+    "Type": "FM.UI.TacticsPitchPositionPanels",
+    "Values": [
+      {
+        "Name": "OpenPlayerRole",
+        "Value": 0
+      },
+      {
+        "Name": "OpenPlayerProfile",
+        "Value": 1
+      },
+      {
+        "Name": "OpenPlayerInstructions",
+        "Value": 2
+      },
+      {
+        "Name": "OpenPlayerSelection",
+        "Value": 3
+      },
+      {
+        "Name": "OpenPlayerRoleExplicitOOP",
+        "Value": 4
+      },
+      {
+        "Name": "OpenPlayerInstructionsExplicitOOP",
+        "Value": 5
+      }
+    ]
+  },
+  {
+    "Assembly": "FM.UI.dll",
+    "Type": "FM.UI.ModifyTacticOption",
+    "Values": [
+      {
+        "Name": "INVALID",
+        "Value": 0
+      },
+      {
+        "Name": "CREATE_NEW",
+        "Value": 1
+      },
+      {
+        "Name": "DUPLICATE_SLOT",
+        "Value": 2
+      },
+      {
+        "Name": "PRIMARY_TRAINED_TACTIC",
+        "Value": 3
+      },
+      {
+        "Name": "EDIT_TACTIC",
+        "Value": 4
+      },
+      {
+        "Name": "PRESETS",
+        "Value": 5
+      },
+      {
+        "Name": "SAVE",
+        "Value": 6
+      },
+      {
+        "Name": "LOAD",
+        "Value": 7
+      },
+      {
+        "Name": "MANAGE",
+        "Value": 8
+      },
+      {
+        "Name": "CLEAR",
+        "Value": 9
+      }
+    ]
+  },
+  {
+    "Assembly": "FM.UI.dll",
+    "Type": "FM.UI.RoleDropdownOption",
+    "Values": [
+      {
+        "Name": "OpenRoleCard",
+        "Value": 0
+      },
+      {
+        "Name": "ChooseRole",
+        "Value": 1
+      },
+      {
+        "Name": "OpenPlayerInstructions",
+        "Value": 2
+      }
+    ]
+  },
+  {
+    "Assembly": "FM.UI.dll",
+    "Type": "FM.UI.TacticTeamSelectionDropdownOption",
+    "Values": [
+      {
+        "Name": "Invalid",
+        "Value": 0
+      },
+      {
+        "Name": "GoToPlayerSelection",
+        "Value": 1
+      },
+      {
+        "Name": "PickPlayer",
+        "Value": 2
+      },
+      {
+        "Name": "ClearPlayer",
+        "Value": 3
+      },
+      {
+        "Name": "GoToPlayerInstructions",
+        "Value": 4
+      }
+    ]
+  },
+  {
+    "Assembly": "FM.UI.dll",
+    "Type": "FM.UI.TacticInstructions.PitchEntityType",
+    "Values": [
+      {
+        "Name": "Texture",
+        "Value": 0
+      },
+      {
+        "Name": "Shape",
+        "Value": 1
+      },
+      {
+        "Name": "Gradient",
+        "Value": 2
+      },
+      {
+        "Name": "Line",
+        "Value": 3
+      }
+    ]
+  }
+]

@@ -1,0 +1,7 @@
+* text=auto
+# Preserve upstream distribution bytes, including native Python runtime modules.
+scripts/vendor/** -text
+references/licenses/** -text
+*.dll binary
+*.pyd binary
+*.gz binary

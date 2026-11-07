@@ -1,0 +1,11 @@
+# Per-installation paths and analysis output
+/local/
+/work/
+/dist/
+*.fm
+game_plugin.dll
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+*.zip

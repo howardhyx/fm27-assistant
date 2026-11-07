@@ -1,0 +1,39 @@
+# Assistant for Football Manager 27
+
+一个只读本地 Football Manager 27 存档的 Agent Skill。按需读取球队、已保存战术、双阶段阵型与角色、指令、选人、球员、合同、赛程、比赛统计与事件、历史战术及已记录的临场修改。字段含义与覆盖限制随结果说明，不内置固定的战术或转会推荐规则。
+
+## 使用条件
+
+- Windows x64、Python 3.12。依赖运行库随 `scripts/vendor` 提供。
+- 当前读取配置仅支持存档 build `27.0.0+2493426` 和匹配指纹的游戏 DLL，详见[维护说明](references/maintenance.md)。开源不表示自动兼容所有 FM27 更新、FM26、macOS 或 Linux。
+- 用户自行安装游戏并提供本地存档；包中不包含游戏 DLL 或私人存档。
+
+## 安装与首次使用
+
+技能标识为 `fm27-assistant`。将完整的 `fm27-assistant` 文件夹放入所用 Agent 的技能目录；例如 Codex 的用户技能目录为 `~/.codex/skills/`。也可直接让支持本地技能的 Agent 读取本目录的 [SKILL.md](SKILL.md)。Python 命令在本目录执行：
+
+```powershell
+python scripts/fm.py doctor --remember-paths
+python scripts/fm.py baseline
+```
+
+首次从系统文档目录和 Steam 库发现位置，校验成功后保存到仅本机使用的 `local/paths.json`。后续直接复用。找不到目录、切换存档或安装目录不可写时，参阅[本地配置](references/local-setup.md)。个人路径不写进公共 Skill 文档。
+
+## 读取范围
+
+[数据类型与命令](references/data-types.md)列出筛选方式；[字段与关联规则](references/semantics.md)解释 ID、原值和覆盖范围。只读本地文件，不操作游戏界面、进程或原存档；未知结构与不匹配版本明确失败。完整触球流、热图、连续跑位、完整定位球指令和实时数据尚不支持，部分字段语义仍未确认。
+
+## 验证与打包
+
+```powershell
+python -B -m unittest discover -s tests -v
+python -B scripts/package_release.py --out "<仓库外的发布包.zip>"
+```
+
+路径测试使用合成文件和隔离配置，不需要读取个人存档；测试夹具写在已忽略的 `local/test-runs/`。发布脚本排除本地配置、测试夹具、工作输出、存档及游戏 DLL，但保留所需运行库和对应第三方源码归档。不要直接把使用过的整个文件夹压缩上传。
+
+原有读取器的历史验证记录保留在 `references/validation.json`，其样本结果不是对任意新游戏版本的兼容承诺。此次路径改造的验证记录与历史读取器报告分开。
+
+## 许可与来源
+
+本项目自有代码和说明采用 [GNU GPL v2](LICENSE)（GPL-2.0-only）；随附第三方组件保留各自许可，见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。Unicorn 的对应源码归档随包保留。本项目是非官方工具，与游戏厂商无隶属关系；游戏文件不在本项目许可范围内。

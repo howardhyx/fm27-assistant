@@ -1,0 +1,6 @@
+interface:
+  display_name: "Assistant for Football Manager 27"
+  short_description: "按需读取本地存档中的阵型、指令、球员与比赛数据，并说明字段含义和覆盖范围"
+  default_prompt: "使用 $fm27-assistant 读取我的存档，首次发现并记录本地路径，先获取必读的阵型和指令，再按我的问题获取所需数据并解释字段。"
+policy:
+  allow_implicit_invocation: true

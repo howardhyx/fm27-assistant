@@ -1,0 +1,406 @@
+"""The people a club employs who are not players, and the lists a club keeps them in.
+
+A row is one person at one club: the department list the club keeps him in, the terms of his
+contract, his ability, and the preferences a staff profile shows. The human manager is a row of
+his own with no readable ability.
+
+**On FM26 the club's board is not here.** A club's staff screen shows its president, its
+director and its managing director beside the coaching and medical staff, and none of the three
+has a row in the staff structures the FM26 layouts read; the rest of that screen's people
+matched a row one for one. On FM27 a person who holds a role at a club with no contract, the
+board among them, is a row with `has_contract` false, and every row carries its `job`.
+"""
+
+from __future__ import annotations
+
+from collections.abc import Mapping
+from dataclasses import dataclass
+from datetime import date
+from enum import IntEnum
+from typing import ClassVar
+
+from fmsave._status import register_field_statuses
+from fmsave.models.common import CodedValue
+from fmsave.models.players import Ability, Personality
+
+
+class StaffJob(IntEnum):
+    """A person's job at his club, as a club's All Staff screen shows it.
+
+    A code is named only where an in-game label confirms that exact code. Each named code
+    matched one FM27 club's All Staff screen, person for person, across its senior and under-18
+    staff and its board. A code no screen we hold has labelled is UNKNOWN and keeps its raw
+    number, even where a label has been reported for it.
+
+    MANAGER is the job of whoever manages a team, the first team's or a youth side's.
+    """
+
+    UNKNOWN = -1
+    COACH = 2
+    CHAIRPERSON = 4
+    DIRECTOR = 6
+    MANAGING_DIRECTOR = 8
+    DIRECTOR_OF_FOOTBALL = 10
+    PHYSIO = 12
+    SCOUT = 14
+    MANAGER = 16
+    ASSISTANT_MANAGER = 20
+    GOALKEEPING_COACH = 34
+    CHIEF_DOCTOR = 38
+    HEAD_OF_SPORTS_SCIENCE = 40
+    SPORTS_SCIENTIST = 48
+    HEAD_PHYSIO = 50
+    PERFORMANCE_ANALYST = 60
+    HEAD_OF_YOUTH_DEVELOPMENT = 64
+    TECHNICAL_DIRECTOR = 88
+
+
+@dataclass(frozen=True, slots=True)
+class StaffPreferences:
+    """How a member of staff prefers a team to be run, each on a 1 to 20 scale.
+
+    These are preferences, not rated attributes: a high `directness` says what the person wants
+    from a side, never how good he is at anything. Fourteen of the save's twenty-six slots have
+    a name; the rest ship as `Staff.unknown["preference_slot_<i>"]`.
+
+    Attributes:
+        attacking: How attacking a side he wants.
+        business: How commercial he wants the club to be.
+        directness: How direct he wants the passing.
+        interference: How much he involves himself in other people's work.
+        patience: How patient he is with a plan.
+        trigger_press: How eagerly he wants the side to press.
+        resources: How freely he wants the club's resources spent.
+        buying_players: How readily he wants players bought.
+        mind_games: How much he plays on an opponent's mind.
+        flexibility: How willing he is to change an approach.
+        hardness_of_training: How hard he wants the side trained.
+        squad_rotation: How much he wants the side rotated.
+        tempo: How quickly he wants the side to play.
+        width: How wide he wants the side to play.
+    """
+
+    attacking: int
+    business: int
+    directness: int
+    interference: int
+    patience: int
+    trigger_press: int
+    resources: int
+    buying_players: int
+    mind_games: int
+    flexibility: int
+    hardness_of_training: int
+    squad_rotation: int
+    tempo: int
+    width: int
+
+
+@dataclass(frozen=True, slots=True)
+class StaffAttributes:
+    """Ratings stored for a staff member.
+
+    Adaptability uses the same 1 to 20 scale as `Staff.personality.adaptability`.
+    The other ratings are unconfirmed and currently read only for FM27 non-human staff.
+    Authority and working with youngsters use a 1 to 20 scale. The rest use a 1 to 100
+    scale. Missing or out-of-range ratings are None.
+
+    Attributes:
+        adaptability: Adaptability.
+        goalkeeping: Goalkeeping (unconfirmed).
+        judging_player_ability: Judging player ability (unconfirmed).
+        judging_player_potential: Judging player potential (unconfirmed).
+        people_management: People management (unconfirmed).
+        motivating: Motivating (unconfirmed).
+        physiotherapy: Physiotherapy (unconfirmed).
+        tactical_knowledge: Tactical knowledge (unconfirmed).
+        attacking: Attacking (unconfirmed).
+        defending: Defending (unconfirmed).
+        fitness: Fitness (unconfirmed).
+        possession: Possession (unconfirmed).
+        technical: Technical (unconfirmed).
+        tactical: Tactical (unconfirmed).
+        analysing_data: Analysing data (unconfirmed).
+        sports_science: Sports science (unconfirmed).
+        negotiating: Negotiating (unconfirmed).
+        judging_staff_ability: Judging staff ability (unconfirmed).
+        set_pieces: Set pieces (unconfirmed).
+        authority: Authority (unconfirmed).
+        working_with_youngsters: Working with youngsters (unconfirmed).
+        determination: Determination (unconfirmed).
+    """
+
+    adaptability: int
+    goalkeeping: int | None = None
+    judging_player_ability: int | None = None
+    judging_player_potential: int | None = None
+    people_management: int | None = None
+    motivating: int | None = None
+    physiotherapy: int | None = None
+    tactical_knowledge: int | None = None
+    attacking: int | None = None
+    defending: int | None = None
+    fitness: int | None = None
+    possession: int | None = None
+    technical: int | None = None
+    tactical: int | None = None
+    analysing_data: int | None = None
+    sports_science: int | None = None
+    negotiating: int | None = None
+    judging_staff_ability: int | None = None
+    set_pieces: int | None = None
+    authority: int | None = None
+    working_with_youngsters: int | None = None
+    determination: int | None = None
+
+
+@dataclass(frozen=True, slots=True)
+class Staff:
+    """One member of staff at one club.
+
+    A person listed by a club's affiliate side and paid by the club itself is **one row at the
+    club**, with the side that lists him in `listed_club_uid`, the same rule a player on a B
+    team follows. A person a club lists but pays nothing has no contract to read, so `wage`,
+    `contract_start` and `contract_end` are None rather than zero.
+
+    `unknown["contract_e36"]` and the three codes beside it are **not** player squad statuses:
+    they come from the same bytes but take different values on staff, and no displayed label has
+    named one, so they ship as raw numbers and never as a `SquadStatus`.
+
+    **The job is `job`, read on FM27 only, and `unknown["r4"]` is not it.** That byte in the
+    ability block was once the candidate, and a club's staff screen ruled it out: over 78
+    displayed rows, 8 of the 16 codes on show carried two or more different job titles. So `r4`
+    keeps its raw number for good. On FM27 the job comes from the person's own contract record,
+    or from the record of a role he holds with no contract.
+
+    **On FM27 a contract offer is not a row.** A person can hold contract records for jobs he
+    has been offered, his own club's offer to renew among them; those are left out, so a row is
+    a job the person holds. FM26 layouts read every contract record as a job.
+
+    The human manager is a row with `is_human_manager` true. His object is laid out differently,
+    so `ability`, `preferences` and every `unknown` key read from the ability block are absent
+    for him, while his name, birth date, personality and contract read normally.
+
+    Attributes:
+        uid: The id fmsave reads for the person's object and joins every table on. It is not
+            the game's Unique ID (that is unique_id): it is the Unique ID of the person stored
+            just before him, so it differs between new games started from the same database
+            (unconfirmed).
+        unique_id: The person's Unique ID in the game database, the same in every new game
+            started from that database. The game can give the id of a person it has deleted
+            to one it creates later. None when the save's bytes cannot tell it (unconfirmed).
+        is_human_manager: Whether this is the save's own human manager (unconfirmed).
+        name: Common name, else first and last name, else legal name (unconfirmed).
+        first_name: First name (unconfirmed).
+        last_name: Surname (unconfirmed).
+        common_name: The name the game shows in place of the full name (unconfirmed).
+        full_name: First and last name together, when both are known (unconfirmed).
+        legal_name: The stored legal name (unconfirmed).
+        birth_date: Date of birth (unconfirmed).
+        age: Age at the save's in-game date (unconfirmed).
+        nation_id: Save-local nation id (unconfirmed).
+        club_uid: Uid of the club the person works for.
+        club_name: Denormalised full name of club_uid.
+        team_id: The team his contract registers him with, or on FM27 the team of a role he
+            holds with no contract; None when neither is read.
+        team_slot: That team's slot in the club's team list, None wherever team_id is
+            (unconfirmed).
+        job: His job at the club, None where no record of it is read, which is every row on
+            FM26 (unconfirmed).
+        listed_club_uid: The club whose own staff list holds him, which is club_uid unless an
+            affiliate side lists him; None when no list holds him (unconfirmed).
+        listed_club_name: Denormalised full name of listed_club_uid; None wherever
+            listed_club_uid is (unconfirmed).
+        in_club_lists: Whether a club's staff list holds him at all (unconfirmed).
+        list_indexes: Which of the three lists hold him, 0 to 2, empty when none does
+            (unconfirmed).
+        has_contract: Whether a contract at club_uid was read for him (unconfirmed).
+        wage: What the contract pays, per week, in the save's base currency; None without a
+            contract.
+        contract_start: The day the contract started.
+        contract_end: The day it ends, None when the save stores none (unconfirmed).
+        ability: Current and potential ability, None when the object carries no readable
+            ability block, as the human manager's does not.
+        personality: The eight personality values, None without a name block.
+        attributes: Adaptability and any readable staff ratings, None without a name block.
+        preferences: The named preferences, None when the object carries no readable ability
+            block.
+        unknown: Numeric fields with no known meaning (unconfirmed). The ability-block keys
+            (`entry_count`, `r4` to `r12` and every `preference_slot_*`) are absent when that
+            block does not read, and the `contract_*` keys when no contract was read.
+    """
+
+    uid: int
+    unique_id: int | None
+    is_human_manager: bool
+    name: str | None
+    first_name: str | None
+    last_name: str | None
+    common_name: str | None
+    full_name: str | None
+    legal_name: str | None
+    birth_date: date | None
+    age: int | None
+    nation_id: int | None
+    club_uid: int
+    club_name: str
+    team_id: int | None
+    team_slot: int | None
+    job: CodedValue[StaffJob] | None
+    listed_club_uid: int | None
+    listed_club_name: str | None
+    in_club_lists: bool
+    list_indexes: tuple[int, ...]
+    has_contract: bool
+    wage: int | None
+    contract_start: date | None
+    contract_end: date | None
+    ability: Ability | None
+    personality: Personality | None
+    attributes: StaffAttributes | None
+    preferences: StaffPreferences | None
+    unknown: Mapping[str, int]
+
+    UNKNOWN_KEYS: ClassVar[tuple[str, ...]] = (
+        "entry_count",
+        "r4",
+        "r5",
+        "r6",
+        "r7",
+        "r8",
+        "r9",
+        "r10",
+        "r11",
+        "r12",
+        "preference_slot_2",
+        "preference_slot_4",
+        "preference_slot_5",
+        "preference_slot_7",
+        "preference_slot_8",
+        "preference_slot_12",
+        "preference_slot_13",
+        "preference_slot_16",
+        "preference_slot_17",
+        "preference_slot_18",
+        "preference_slot_19",
+        "preference_slot_20",
+        "contract_e36",
+        "contract_e37",
+        "contract_e38",
+        "contract_e39",
+        "contract_type",
+    )
+
+
+@dataclass(frozen=True, slots=True)
+class StaffList:
+    """One of the three staff lists a club record holds, for one club.
+
+    A club that lists nobody has no row here at all; a club that lists somebody has all three
+    rows, empty lists included. The lists split a club's staff into groups, and the codes their
+    members carry differ from list to list.
+
+    **The three lists look like the three departments a club's staff screen shows.** On one
+    club, the screen's medical, coaching and recruitment panels and the club's senior rows in
+    lists 0, 1 and 2 held the same people, person for person by name, save for the human
+    manager and one contracted person no list holds; that makes list 0 medical, list 1
+    coaching and list 2 recruitment. It is arithmetic on one club rather than a label on a
+    list, so it is recorded here and `list_index` stays a number.
+
+    People a list holds who turn out to be players are dropped, and so are the few whose object
+    cannot be told from another's, so a list's people are those `staff()` also has a row for.
+
+    Attributes:
+        club_uid: Uid of the club whose record holds the list (unconfirmed).
+        club_name: Denormalised full name of club_uid (unconfirmed).
+        list_index: Which of the club's three lists this is, 0 to 2 (unconfirmed).
+        staff_uids: The uid of each person the list holds, in stored order. They are
+            `Staff.uid` values and join to the staff table (unconfirmed).
+        staff_names: Each of those people's name, aligned with staff_uids
+            (unconfirmed).
+    """
+
+    club_uid: int
+    club_name: str
+    list_index: int
+    staff_uids: tuple[int, ...]
+    staff_names: tuple[str | None, ...]
+
+
+register_field_statuses(
+    StaffPreferences,
+    verified=(
+        "attacking",
+        "business",
+        "directness",
+        "interference",
+        "patience",
+        "trigger_press",
+        "resources",
+        "buying_players",
+        "mind_games",
+        "flexibility",
+        "hardness_of_training",
+        "squad_rotation",
+        "tempo",
+        "width",
+    ),
+)
+register_field_statuses(
+    StaffAttributes,
+    verified=("adaptability",),
+    unconfirmed=(
+        "goalkeeping",
+        "judging_player_ability",
+        "judging_player_potential",
+        "people_management",
+        "motivating",
+        "physiotherapy",
+        "tactical_knowledge",
+        "attacking",
+        "defending",
+        "fitness",
+        "possession",
+        "technical",
+        "tactical",
+        "analysing_data",
+        "sports_science",
+        "negotiating",
+        "judging_staff_ability",
+        "set_pieces",
+        "authority",
+        "working_with_youngsters",
+        "determination",
+    ),
+)
+register_field_statuses(
+    Staff,
+    verified=("club_uid", "club_name", "team_id", "wage", "contract_start"),
+    unconfirmed=(
+        "uid",
+        "unique_id",
+        "is_human_manager",
+        "name",
+        "first_name",
+        "last_name",
+        "common_name",
+        "full_name",
+        "legal_name",
+        "birth_date",
+        "age",
+        "nation_id",
+        "team_slot",
+        "job",
+        "listed_club_uid",
+        "listed_club_name",
+        "in_club_lists",
+        "list_indexes",
+        "has_contract",
+        "contract_end",
+        "unknown",
+    ),
+)
+register_field_statuses(
+    StaffList,
+    unconfirmed=("club_uid", "club_name", "list_index", "staff_uids", "staff_names"),
+)

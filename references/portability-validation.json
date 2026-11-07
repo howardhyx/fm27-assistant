@@ -1,0 +1,13 @@
+{
+  "scope": "Open-source packaging and portable local path configuration",
+  "synthetic_path_and_packaging_tests": 17,
+  "test_result": "passed",
+  "skill_structure_validation": "passed (UTF-8 mode)",
+  "python_sources_parsed": 132,
+  "private_path_scan": "passed; upstream standard-library drive-letter examples preserved",
+  "relative_markdown_links": "passed",
+  "bundled_third_party_files": "byte-for-byte unchanged",
+  "original_skill": "not modified",
+  "real_save_decoding": "not rerun; no personal save was read",
+  "supported_build_unchanged": "27.0.0+2493426"
+}

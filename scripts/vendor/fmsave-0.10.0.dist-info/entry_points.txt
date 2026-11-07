@@ -1,0 +1,3 @@
+[console_scripts]
+fmsave = fmsave.cli:main
+

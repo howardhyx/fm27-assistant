@@ -1,0 +1,82 @@
+{
+  "skill": "fm27-assistant",
+  "scope": "read and understand; no fixed recommendation workflow",
+  "runtime": "Windows x64 / Python 3.12",
+  "supported_save_build": "27.0.0+2493426",
+  "checks": {
+    "skill_frontmatter": "passed",
+    "python_sources": "parsed",
+    "relative_reference_links": "passed",
+    "no_user_saves_or_preexported_player_maps_in_package": true,
+    "independent_agent_forward_test": "passed; 5 data calls",
+    "baseline_on_old_and_updated_saves": true,
+    "updated_save_game_date": "2027-01-06",
+    "updated_save_tactic_count": 2,
+    "updated_single_match_verification": {
+      "team_sum_checks": 10,
+      "player_goal_assist_card_checks": 160,
+      "passed": true
+    },
+    "reserve_team_baseline": "passed",
+    "player_field_projection": "passed",
+    "season_field_projection": "passed",
+    "finance_projection": "passed",
+    "future_fixtures": "passed",
+    "routine_names": "passed",
+    "cache_directory_prefix_filter": "passed",
+    "unsupported_season_date_filter": "rejected",
+    "historical_match_instructions": {
+      "valid_matches": 3,
+      "owning_teams": 6,
+      "named_tactics_differ": true,
+      "home_away_order_checked": true,
+      "groups_per_team": 29,
+      "dual_phase_slots_per_team": 11,
+      "unknown_nonzero_bits_retained": true,
+      "missing_primary_signature_rejected": true,
+      "duplicate_owner_root_rejected": true,
+      "incorrect_side_order_rejected": true,
+      "cli_on_old_and_updated_saves": "passed",
+      "binding_scope": "bounded structural owner binding; partial engine-state walk",
+      "snapshot_time": "serialized baseline preceding recorded commands; effective kickoff behavior not fully replayed"
+    },
+    "recorded_tactical_command_timeline": {
+      "sample_matches": 3,
+      "commands_decoded": 55,
+      "queue_counts": [
+        15,
+        15,
+        25
+      ],
+      "team_setting_replacements": 8,
+      "substitution_tick_cross_checks": 11,
+      "all_queues_end_at_frame_eof": true,
+      "primary_side_reversed_sample": true,
+      "unsupported_kind_rejected": true,
+      "truncated_queue_rejected": true,
+      "incorrect_count_rejected": true,
+      "independent_substitution_tick_disagreement_rejected": true,
+      "time_units": "recorded minute plus unchanged native tick; seconds/stoppage display not inferred",
+      "effective_behavior_replayed": false
+    },
+    "unmapped_team_bit_33_investigation": {
+      "consistently_read_and_retained": true,
+      "present_in_current_and_historical_baseline_and_late_replacement": true,
+      "current_UI_option_resolver_names_it": false,
+      "functional_meaning": "unresolved; no guessed label"
+    }
+  },
+  "limitations": [
+    "Pinned game build only",
+    "Some field semantics remain partial",
+    "No complete passing/touch map, heatmap or continuous tracking",
+    "No live UI/process access",
+    "No role-default instruction expansion",
+    "Unknown nonzero instruction bits are retained without names",
+    "Historical team-root/preset prefix variants outside validated layout are rejected",
+    "Recorded command queue is decoded for supported kinds; not every automatic AI decision is proven covered",
+    "Base settings, tactical tweaks and role defaults are not combined into a fully simulated effective state",
+    "Unknown team bit 33 remains semantically unresolved"
+  ],
+  "report_origin": "Inherited historical decoder validation from the original local skill; not rerun as part of the portability changes."
+}
