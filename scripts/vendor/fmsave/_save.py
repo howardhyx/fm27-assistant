@@ -2153,6 +2153,10 @@ class Save:
             club_team_ids = (
                 [] if managed_club is None else [team.team_id for team in managed_club.teams]
             )
+            if save_info.build == "27.0.1+2494687":
+                from fmsave.readers.tactics import primary_collection_end
+                end = primary_collection_end(tactics_section, layout, save_info.file_name)
+                tactics_section = tactics_section[:end]
             blocks, walk_counts = walk_tactic_blocks(
                 tactics_section, club_team_ids, layout, save_info.file_name
             )
