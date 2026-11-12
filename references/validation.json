@@ -78,5 +78,68 @@
     "Base settings, tactical tweaks and role defaults are not combined into a fully simulated effective state",
     "Unknown team bit 33 remains semantically unresolved"
   ],
-  "report_origin": "Inherited historical decoder validation from the original local skill; not rerun as part of the portability changes."
+  "additional_profiles": {
+    "27.0.1+2494687": {
+      "game_dll_sha256": "f79b0a3413dd0e3f461b0afbc3ff397003f4a26d7525a30717428de6a8b91196",
+      "date": "2026-11-11",
+      "strict_checks_preserved": true,
+      "primary_tactic_collection": "counted sequential blocks and complete routine boundaries; duplicate roots outside ownership excluded",
+      "baseline": {
+        "tactics": 3,
+        "phase_slots_per_tactic": 22,
+        "saved_selection_rows": 20,
+        "team_instruction_groups": 29,
+        "unknown_team_bit_33_retained": true
+      },
+      "match_samples": 4,
+      "team_sum_checks": 40,
+      "player_goal_assist_card_checks": 688,
+      "historical_teams": 8,
+      "historical_native_owner_chain_rederived": false,
+      "native_scalar_reader_rva": "263d150",
+      "timeline": {
+        "passing_samples": 3,
+        "commands": 84,
+        "substitution_cross_checks": 9,
+        "unsupported_kind": 5,
+        "unknown_payloads_skipped": false
+      },
+      "regression_tests": 19,
+      "unsupported_commands": [
+        "season"
+      ],
+      "limitations": [
+        "Season aggregate integrity check failed",
+        "Timeline kind 5 remains unsupported",
+        "Historical owner chain on new binary remains structurally validated, not independently rederived"
+      ]
+    }
+  },
+  "version_admission_policy_update": {
+    "date": "2026-11-12",
+    "version_check_enforced": false,
+    "doctor_required": false,
+    "regression_tests_passed": 9,
+    "strict_structure_and_result_checks_preserved": true,
+    "unknown_dll_smoke_tests": [
+      "doctor",
+      "baseline",
+      "cache-matches",
+      "match summary"
+    ],
+    "baseline_tactics": 3,
+    "baseline_selection_rows": 20,
+    "single_match_checks": {
+      "team_sum_checks": 10,
+      "player_goal_assist_card_checks": 184,
+      "passed": true
+    },
+    "native_profile_validated": false,
+    "scope": "version admission removed; smoke tests do not establish all-version or all-field compatibility",
+    "github_portability_integration": {
+      "tests_passed": 26,
+      "existing_path_discovery_and_persistence": "preserved",
+      "synthetic_failed_doctor_does_not_persist_config": "passed"
+    }
+  }
 }

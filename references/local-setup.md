@@ -4,6 +4,8 @@
 
 ## 首次使用
 
+可直接执行 `python scripts/fm.py baseline` 自动发现并读取。下列 `doctor --remember-paths` 是可选的诊断与路径记忆步骤，不再是读取前置条件。
+
 ```powershell
 python scripts/fm.py doctor --remember-paths
 ```
@@ -14,7 +16,7 @@ python scripts/fm.py doctor --remember-paths
 python scripts/fm.py doctor --save "<实际存档.fm>" --game-dir "<实际游戏安装目录>" --remember-paths
 ```
 
-`--game-dir` 也接受 `game_plugin.dll` 文件本身。此步骤只读取本地文件，不启动游戏、不操作界面、不下载任何内容。校验版本、读取来源和游戏内日期成功后，才写入 `local/paths.json`：
+`--game-dir` 也接受 `game_plugin.dll` 文件本身。此步骤只读取本地文件，不启动游戏、不操作界面、不下载任何内容。读取来源、游戏内日期及结构检查成功后，才写入 `local/paths.json`；版本或指纹不匹配仅提示，不阻断读取：
 
 ```json
 {
@@ -32,7 +34,7 @@ python scripts/fm.py doctor --save "<实际存档.fm>" --game-dir "<实际游戏
 python scripts/fm.py baseline
 ```
 
-程序自行读取本 Skill 的配置，重新读取当前存档文件并校验 DLL 指纹和存档版本。记住路径不代表复用旧数据；baseline 的重读规则仍然适用。
+程序自行读取本 Skill 的配置，重新读取当前存档文件，记录 DLL 指纹和存档版本；不再将其作为准入条件，结构及结果完整性检查仍严格执行。记住路径不代表复用旧数据；baseline 的重读规则仍然适用。
 
 每类路径独立按以下顺序选择：命令参数、本次进程环境变量、本地配置、自动发现。临时使用 `--save` 或 `--game-dir` 不会覆盖配置；只有成功的 `doctor --remember-paths` 才持久更新。切换存档时运行带新 `--save` 的同一命令。文件失效时明确报错，不自动换成其他生涯；配置 JSON 损坏时先修正该文件，不能悄悄忽略。
 
@@ -47,3 +49,4 @@ python scripts/fm.py baseline
 分析输出用 `--out` 写工作区 JSON，先创建所需父目录。不把游戏缓存记录与磁盘缓存目录混淆：`cache-matches` 读取的是存档内的比赛记录，不是将全部比赛导出到某个目录。
 
 `local/`、工作输出、存档、游戏 DLL 和 Python 缓存均不提交。不要手工将个人绝对路径写入通用说明或参考文件。随附发布打包脚本也会排除这些文件。
+

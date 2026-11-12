@@ -4,13 +4,23 @@
 
 ## 1. 来源与必读包
 
+仅查询日期、版本或文件来源：
+
+```text
+metadata --save <file.fm>
+```
+
+`metadata` 不依赖游戏安装或 DLL，返回 `game_date/build/save_name/time_slot/clock_source/metadata_schemas` 和完整文件来源。它只接受存档和输出参数，不接受球队、游戏目录或字段裁剪参数。日期来自结构化存档摘要；若该时钟不可验证则拒绝，不猜测内部时钟。`coverage.metadata_only=true` 表示未读取球队、战术或比赛，此时不执行 `baseline`。这不是新版本的完整适配证明。
+
 ```text
 doctor --save <file.fm>
 baseline --save <file.fm> --out <workspace/work/baseline.json>
 context
 ```
 
-`doctor` 确认解释器、存档、版本和2,000级缓存目录是否可读，不解码整个比赛集。缓存条数来自当前存档，不能把开发验证中的2,201条当成固定值。
+`doctor` 是可选诊断，不是读取前置步骤。它报告解释器、存档、版本、指纹及缓存目录是否可读，不解码整个比赛集。未知指纹或存档/DLL版本不同不阻断读取；`profile.version_check_enforced=false`，未匹配历史验证组合时原生适配标记为未经验证，结构检查仍严格执行。缓存条数来自当前存档，不能把开发验证中的2,201条当成固定值。
+
+`27.0.1+2494687` 的 `doctor.profile.unsupported_commands` 明列 `season`。`baseline.coverage.saved_tactic_collection` 记录首部声明块数、顺序遍历边界和集合外字节数。历史战术和时间线仍是部分结构读取；时间线载荷类型5尚不支持，应单独请求已支持的 `summary/players/events/tactics`，不能跳过未知指令后拼成完整时间线。
 
 `baseline.data`：
 
