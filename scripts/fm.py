@@ -1,12 +1,14 @@
 """FM27 read-only data gateway. JSON on stdout; no analysis or game mutations."""
 from __future__ import annotations
-import argparse,collections,dataclasses,datetime,enum,hashlib,json,os,pathlib,struct,sys,warnings
+import argparse,collections,dataclasses,datetime,enum,hashlib,json,os,pathlib,struct,sys,types,warnings
 ROOT=pathlib.Path(__file__).resolve().parent
 sys.dont_write_bytecode=True
 sys.path.insert(0,str(ROOT/'vendor'))
 if hasattr(sys.stdout,'reconfigure'):sys.stdout.reconfigure(encoding='utf8')
 BUILD='27.0.0+2493426'
 DLL_HASH='252ff8fb5b7a4a5a5464db6ba632e309eef9b6e65ffa992ae20575a189e66c6a'
+NEW_BUILD='27.0.1+2494687'
+NEW_DLL_HASH='f79b0a3413dd0e3f461b0afbc3ff397003f4a26d7525a30717428de6a8b91196'
 HIDDEN={'dirtiness','consistency','important_matches','injury_proneness','versatility'}
 POSITIONS={'gk','dc','dr','dl','dm','mc','ml','mr','aml','amc','amr','stc','wbl','wbr'}
 from local_paths import DEFAULT_CONFIG,load_config,resolve_dll,resolve_save,remember_paths
@@ -16,8 +18,41 @@ def encode(value):
     if isinstance(value,enum.Enum):return value.name.lower()
     if isinstance(value,dict)or hasattr(value,'items'):return {str(k):encode(v)for k,v in value.items()}
     if isinstance(value,(list,tuple)):return [encode(v)for v in value]
-    if isinstance(value,(datetime.date,datetime.datetime,pathlib.Path)):return str(value)
+    if isinstance(value,(datetime.date,datetime.datetime,datetime.time,pathlib.Path)):return str(value)
     return value
+
+class MetadataSession:
+    """Validate the container and structured save clock without a native DLL profile."""
+    def __init__(self,args):
+        from fmsave._container import read_index
+        from fmsave._version import read_save_info,read_summary_facts
+        self.args=args;self.notices=[];self.filters={}
+        self.path,save_source=resolve_save(args.save,load_config(args.config));self.before=self.path.stat()
+        automatic=save_source=='newest_discovered_save'
+        self.path_selection={'save':save_source,'game_dll':None,'config_path':str(args.config.resolve())}
+        index=read_index(self.path)
+        info=read_save_info(index)
+        if info.game!='FM27':raise ValueError('Metadata command supports FM27 only.')
+        # Require the displayed clock's structured summary, rather than an internal-clock fallback.
+        summary=read_summary_facts(index)
+        if summary.game_date is None or summary.game_date!=info.game_date or summary.time_slot!=info.time_slot:
+            raise ValueError('Displayed save clock is not confirmed by the structured summary.')
+        self.save=types.SimpleNamespace(info=info);self.club_uid=None;self.team_id=None
+        self.profile={'save_build':info.build,'game_dll':None,'game_dll_sha256':None,
+            'profile_validated':False,'native_profile_validated':False,'validation_scope':'structured_metadata_only'}
+        self.coverage={'metadata_only':True,'structured_clock_checked':True,'truncated':False}
+        if automatic:self.notices.append('Auto-selected newest modified save; verify source path and in-game date.')
+        self.notices.append('Only structured save metadata was decoded. Native DLL compatibility and team/tactic/match data are not established by this command.')
+        self.checked()
+    def checked(self):
+        after=self.path.stat()
+        if (after.st_size,after.st_mtime_ns)!=(self.before.st_size,self.before.st_mtime_ns):raise RuntimeError('SAVE_CHANGED: wait until the game finishes saving and retry.')
+    def close(self):pass
+    def dispatch(self):
+        info=self.save.info
+        return {'game':info.game,'build':info.build,'game_date':str(info.game_date),'time_slot':info.time_slot,
+            'save_name':info.save_name,'clock_source':'save_game_summary.structured_clock',
+            'metadata_schemas':{k:info.section_schemas[k]for k in ('game_info','save_game_summary')},'read_only':True}
 
 def project(row,fields):
     if not fields:return row
@@ -53,16 +88,24 @@ class Session:
         self.args=args;self.notices=[];self.filters={};self.coverage={};self._cache=None
         config=load_config(args.config)
         dll,dll_source=resolve_dll(args.game_dir,config)
-        self.path,save_source=resolve_save(args.save,config)
-        self.path_selection={'save':save_source,'game_dll':dll_source,'config_path':str(args.config.resolve())}
-        self.notices.append(f'Path selection: save={save_source}; game DLL={dll_source}. Verify source path and in-game date.')
         with dll.open('rb')as f:digest=hashlib.file_digest(f,'sha256').hexdigest()
-        if digest!=DLL_HASH:raise ValueError('UNSUPPORTED_BUILD: game DLL changed; revalidate the profile before decoding.')
+        expected_build={DLL_HASH:BUILD,NEW_DLL_HASH:NEW_BUILD}.get(digest)
         os.environ['FM27_GAME_DLL']=str(dll)
         import fmsave
-        self.path=self.path.resolve();self.before=self.path.stat();self.save=fmsave.open(self.path,strict=True)
-        if self.save.info.build!=BUILD:
-            self.save.close();raise ValueError(f'UNSUPPORTED_BUILD: save {self.save.info.build}; supported {BUILD}')
+        self.path,save_source=resolve_save(args.save,config)
+        automatic=save_source=='newest_discovered_save'
+        self.path_selection={'save':save_source,'game_dll':dll_source,'config_path':str(args.config.resolve())}
+        self.notices.append(f'Path selection: save={save_source}; game DLL={dll_source}. Verify source path and in-game date.')
+        self.before=self.path.stat();self.save=fmsave.open(self.path,strict=True)
+        if self.save.info.game!='FM27':
+            self.save.close();raise ValueError('This gateway supports FM27 saves only.')
+        if self.save.info.build==NEW_BUILD and args.command=='season':
+            self.save.close();raise ValueError('UNSUPPORTED_CAPABILITY: season aggregates failed an integrity check on 27.0.1; this command remains disabled.')
+        if self.save.info.build==NEW_BUILD:
+            required={'game_info':47,'save_game_summary':31,'game_db':4000,'humans':24,'tactics_man':26,'match_stats_cfg':6}
+            for name,schema in required.items():
+                if self.save.info.section_schemas.get(name)!=schema:
+                    self.save.close();raise ValueError(f'UNSUPPORTED_SCHEMA: {name} differs from the expected data layout.')
         self.clubs=list(self.save.managed_clubs());ids={c.club_uid for c in self.clubs}
         if args.club_uid is None and len(ids)!=1 and args.command not in ('doctor','context'):
             raise ValueError(f'Multiple managed clubs: specify --club-uid from {sorted(ids)}.')
@@ -73,10 +116,20 @@ class Session:
         self.club=club
         self.team_id=args.team_id if args.team_id is not None else club.teams[0].team_id
         if self.team_id not in [t.team_id for t in club.teams]:raise ValueError('--team-id does not belong to the selected club; supply the matching --club-uid.')
-        self.profile={'save_build':BUILD,'game_dll_sha256':digest,'profile_validated':True,'game_dll':str(dll)}
+        matched=expected_build==self.save.info.build
+        self.profile={'save_build':self.save.info.build,'game_dll_sha256':digest,'profile_validated':matched,'game_dll':str(dll),
+            'native_profile_validated':matched,'version_check_enforced':False,
+            'validation_scope':'full_existing_profile'if matched else 'structural_checks_only; native_profile_unverified'}
+        if not matched:
+            self.notices.append('Version admission checks are disabled. The DLL/save combination is unverified; structural and result-integrity checks remain enforced.')
+        if self.save.info.build==NEW_BUILD:
+            self.profile.update(unsupported_commands=['season'])
+            if matched:self.profile['validation_scope']='checked_primary_tactics_and_native_match_scalars'
+            self.notices.append('27.0.1 season aggregates remain disabled after a failed integrity check. Primary saved tactics are read by the header-owned counted collection; later serialized manager copies are outside that collection.')
+            self.notices.append('Recorded tactical timelines support checked payload kinds only; command kind 5 is currently unsupported and rejects the whole timeline.')
         if not self.save.info.known_build:
-            self.notices.append('The community parser does not list this build as verified. The custom native profile is pinned and checked separately; this does not establish every secondary field meaning or UI label.')
-        if save_source=='newest_discovered_save':self.notices.append('Auto-selected newest modified save; verify source path and in-game date before using the result.')
+            self.notices.append('The community parser does not list this build as verified. Reader structural checks remain enabled; native-profile evidence is reported separately and does not establish every field meaning or UI label.')
+        if automatic:self.notices.append('Auto-selected newest modified save; verify source path and in-game date.')
     def close(self):self.save.close()
     def context(self):
         return {'managed_clubs':[{'club_uid':c.club_uid,'club_name':c.club_name}for c in self.clubs],
@@ -168,7 +221,7 @@ class Session:
                for index,uid in zip(records.pindexes,records.uids)if uid in players}
         uids={p.unique_id:{'uid':p.uid,'unique_id':p.unique_id,'name':p.name}for p in players.values()if p.unique_id is not None}
         raw_match=self.cache().read(key)
-        data=read_match(raw_match,names,uids)
+        data=read_match(raw_match,names,uids,build=self.save.info.build)
         if self.team_id not in [t['team_id']for t in data['teams']]:raise ValueError('Requested match does not contain selected team')
         day=data['kick_off'][:10]
         if self.args.date and day!=self.args.date:raise ValueError('--match-key and --date select different matches')
@@ -253,6 +306,13 @@ class Session:
         if not tactics:raise ValueError('No saved tactic for selected team; baseline is incomplete.')
         selection=[encode(r)for r in self.save.selections()if r.team_id==self.team_id]
         self.coverage={'tactics':len(tactics),'selection_rows':len(selection),'truncated':False}
+        if self.save.info.build==NEW_BUILD:
+            from fmsave.readers.tactics import primary_collection_end,find_tactics_layout,read_tactics_header
+            with self.save._context.section('tactics_man')as section:
+                layout=find_tactics_layout(self.save.info.section_schemas.get('tactics_man'),self.save.info.build)
+                end=primary_collection_end(section,layout,self.save.info.file_name)
+                self.coverage['saved_tactic_collection']={'header_declared_team_blocks':read_tactics_header(section,layout,self.save.info.file_name)[1],
+                    'end_offset':end,'bytes_outside_primary_collection':len(section)-end,'boundary':'sequential counted team blocks and complete routine groups'}
         return {'context':self.context(),'tactics':tactics,'selection':selection,
                 'mandatory_read_complete':True,'current_tactic_selected':None,
                 'interpretation':['Saved selections may differ from the next match lineup.',
@@ -296,10 +356,10 @@ class Session:
 
 def parser():
     p=argparse.ArgumentParser(description=__doc__)
-    p.add_argument('command',choices=['doctor','baseline','context','tactics','selection','players','contracts','fixtures','cache-matches','match','season','finances','set-pieces'])
+    p.add_argument('command',choices=['metadata','doctor','baseline','context','tactics','selection','players','contracts','fixtures','cache-matches','match','season','finances','set-pieces'])
     p.add_argument('--save',type=pathlib.Path);p.add_argument('--game-dir',type=pathlib.Path)
     p.add_argument('--config',type=pathlib.Path,default=DEFAULT_CONFIG,help='Machine-local paths JSON; defaults to this skill/local/paths.json.')
-    p.add_argument('--remember-paths',action='store_true',help='doctor only: persist validated save/DLL paths for subsequent calls.')
+    p.add_argument('--remember-paths',action='store_true',help='doctor only: persist successfully checked save/DLL paths for subsequent calls.')
     p.add_argument('--club-uid',type=int);p.add_argument('--team-id',type=int)
     p.add_argument('--out',type=pathlib.Path);p.add_argument('--limit',type=int,default=50);p.add_argument('--fields')
     p.add_argument('--scope',choices=['team','club','all'],default='team')
@@ -318,8 +378,10 @@ def main():
     try:
         if sys.version_info[:2]!=(3,12)or sys.maxsize<=2**32 or sys.platform!='win32':raise ValueError('Bundled runtime requires Windows x64 and Python 3.12; do not silently replace pinned packages.')
         if not 1<=a.limit<=1000:raise ValueError('--limit must be 1..1000; use narrower filters for larger requests.')
-        if a.remember_paths and a.command!='doctor':raise ValueError('--remember-paths is supported only for doctor, after successful validation.')
-        if a.fields and a.command in ('baseline','tactics','doctor'):raise ValueError('--fields is not supported for this mandatory/context command; read its complete structure.')
+        if a.remember_paths and a.command!='doctor':raise ValueError('--remember-paths is supported only for doctor, after successful structural checks.')
+        if a.fields and a.command in ('baseline','tactics','doctor','metadata'):raise ValueError('--fields is not supported for this mandatory/context command; read its complete structure.')
+        if a.command=='metadata'and any(v is not None for v in (a.game_dir,a.club_uid,a.team_id)):
+            raise ValueError('metadata reads only the save; --game-dir, --club-uid and --team-id are not supported.')
         allowed={
             'player_uid':{'players','contracts','season','match'},'player_unique_id':{'players','contracts','season','match'},
             'name':{'players','contracts','season','match'},'position':{'players','contracts'},'age_min':{'players','contracts'},
@@ -341,27 +403,37 @@ def main():
             if getattr(a,name):datetime.date.fromisoformat(getattr(a,name))
         if a.command=='contracts'and not a.fields:a.fields='uid,unique_id,name,club_name,team_id,contract'
         with warnings.catch_warnings(record=True)as caught:
-            warnings.simplefilter('always');s=Session(a)
+            warnings.simplefilter('always');s=MetadataSession(a)if a.command=='metadata'else Session(a)
             data={'python':sys.version.split()[0],'profile':s.profile,'context':s.context(),
                   'cache_records':len(s.cache().index),'read_only':True}if a.command=='doctor'else s.dispatch()
             s.checked()
         notices=list(dict.fromkeys([*s.notices,*[str(w.message)for w in caught]]))
         result={'ok':True,'schema_version':1,'data_type':a.command,
                 'source':{'save_path':str(s.path),'save_mtime_ns':s.before.st_mtime_ns,'save_bytes':s.before.st_size,
-                          'game_date':str(s.save.info.game_date),'build':BUILD,'game_dll_sha256':DLL_HASH,
+                          'game_date':str(s.save.info.game_date),'build':s.save.info.build,'game_dll_sha256':s.profile['game_dll_sha256'],
                           'club_uid':s.club_uid,'team_id':s.team_id,'path_selection':s.path_selection},
                 'coverage':s.coverage,'filters':s.filters,'notices':notices,'data':data}
-        result['interpretation_status']=('native_profile_and_independent_structure_checks'if a.command in ('baseline','tactics','match')
-                                         else 'community_parser_structure_checked; field_semantics_may_be_partial')
+        result['interpretation_status']=('structured_metadata_only'if a.command=='metadata'else
+            'native_profile_and_independent_structure_checks'if a.command in ('baseline','tactics','match')and s.profile['native_profile_validated']else
+            'independent_current_tactic_structure_checks'if a.command in ('baseline','tactics')else
+            'unverified_native_profile; cross_record_checks_passed; historical_engine_state_partial'if a.command=='match'else
+            'community_parser_structure_checked; field_semantics_may_be_partial')
+        if a.command!='metadata'and s.save.info.build==NEW_BUILD:
+            if a.command in('baseline','tactics'):result['interpretation_status']='independent_saved_tactic_structure_checks; unrecognized_bits_retained'
+            elif a.command=='match':result['interpretation_status']=('pinned_native_scalar_and_cross_record_checks; historical_engine_state_partial'if s.profile['native_profile_validated']else 'unverified_native_profile; cross_record_checks_passed; historical_engine_state_partial')
         body=json.dumps(result,ensure_ascii=False,indent=2,allow_nan=False)
         if a.remember_paths:
             saved_config=remember_paths(a.config,s.path,s.profile['game_dll'])
-            result['notices'].append(f'Validated paths saved to {saved_config}; later calls reuse this exact save file unless overridden.')
+            result['notices'].append(f'Checked source paths saved to {saved_config}; later calls reuse this exact save file unless overridden.')
             body=json.dumps(result,ensure_ascii=False,indent=2,allow_nan=False)
         if a.out:
             destination=a.out.resolve()
-            game_root=pathlib.Path(s.profile['game_dll']).parents[3]
-            if destination.suffix.lower()!='.json'or destination==s.path or destination.is_relative_to(game_root)or destination.is_relative_to(s.path.parent):
+            dll=s.profile['game_dll']
+            if dll is None:
+                try:dll=resolve_dll(config=load_config(a.config))[0]
+                except ValueError:pass
+            game_root=pathlib.Path(dll).parents[3]if dll else None
+            if destination.suffix.lower()!='.json'or destination==s.path or (game_root is not None and destination.is_relative_to(game_root))or destination.is_relative_to(s.path.parent):
                 raise ValueError('Output must be a workspace JSON outside the game installation and save directory.')
             destination.write_text(body,encoding='utf8')
             print(json.dumps({'ok':True,'data_type':a.command,'output':str(destination),'source':result['source'],'coverage':s.coverage},ensure_ascii=False))

@@ -6,12 +6,8 @@ from backports import zstd
 from decode_match_details import decode_data
 from emulate_player_reader import PlayerDecoder
 from extended_match_reader import Buffer,team_tail,match_extras,UnsupportedVariant
-from native_inspect import DLL
+from native_inspect import DLL,dll_hash
 EXPECTED_DLL='252ff8fb5b7a4a5a5464db6ba632e309eef9b6e65ffa992ae20575a189e66c6a'
-
-def check_build():
-    with DLL.open('rb')as f:digest=hashlib.file_digest(f,'sha256').hexdigest()
-    if digest!=EXPECTED_DLL:raise UnsupportedVariant('Game build changed; native field layout must be revalidated.')
 
 class Cache:
     def __init__(self,data):
@@ -39,7 +35,14 @@ class Cache:
         if not z.eof or z.unused_data:raise ValueError('invalid or oversized match frame')
         return data
 
-def read_match(data,names,uidnames=None):
+def read_match(data,names,uidnames=None,*,build=None):
+    # Keep a fingerprint for source stability; never use it as an admission gate.
+    digest=dll_hash()
+    decoder=PlayerDecoder
+    modern=(build.split('+',1)[0]!='27.0.0')if build else digest!=EXPECTED_DLL
+    if modern:
+        from emulate_player_2701 import PlayerDecoder2701
+        decoder=PlayerDecoder2701
     if data[:5]!=bytes.fromhex('0100013c1f'):raise UnsupportedVariant('match stream version')
     candidates=decode_data(data)
     if len(candidates)!=2:raise UnsupportedVariant(f'Expected two validated team headers; found {len(candidates)}')
@@ -48,7 +51,7 @@ def read_match(data,names,uidnames=None):
     for side,t in enumerate(candidates):
         pos=t['players_start'];players=[]
         for _ in range(t['roster_count']):
-            reader=PlayerDecoder(data,pos);memory,end,_=reader.decode();extension=data[end]
+            reader=decoder(data,pos);memory,end,_=reader.decode();extension=data[end]
             if extension not in (0,1):raise UnsupportedVariant('player identity extension')
             pos=end+1+(11 if extension else 0)
             reference=struct.unpack_from('<I',memory,0x18)[0]
@@ -83,6 +86,7 @@ def read_match(data,names,uidnames=None):
             for k,value in [('goals',goals),('assists',assists),('yellow_cards',yellows),('red_cards',reds)]:
                 if p['stats'][k]!=value:raise ValueError(f'{k} incident disagreement for team {side}, player {index}')
             checks.append({'side':side,'roster_index':index,'goal_and_card_counts_match':True})
+    if dll_hash()!=digest:raise UnsupportedVariant('Game DLL changed during match decoding')
     return {'kick_off':str(datetime.datetime(1,1,1)+datetime.timedelta(minutes=struct.unpack_from('<i',data,11)[0])),
             'teams':teams,'extras':extras,'verification':{'team_sum_checks':10,'player_goal_assist_card_checks':len(checks)*4,'passed':True},
             'limitations':['Other event kinds and advanced-shot coordinates/flags remain unconfirmed.',

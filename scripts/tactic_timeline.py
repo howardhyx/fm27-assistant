@@ -82,17 +82,20 @@ def parse_queue(data,start):
 def read_timeline(data,match,historical):
     lower=max(len(data)-65536,match['extras']['end'],
               max(t['evidence']['decoded_creator_prefix_end']for t in historical['teams']))
-    candidates=[]
+    candidates=[];unsupported_payloads=[]
     for at in range(lower,len(data)-3):
         if data[at+2:at+4]!=b'\x44\x00':continue
         count=struct.unpack_from('<H',data,at)[0]
         if count>1000:continue
         if count and (at+11>len(data)or data[at+4]not in KINDS):continue
         try:queue=parse_queue(data,at)
-        except (ValueError,UnicodeDecodeError,KeyError,IndexError):continue
+        except (ValueError,UnicodeDecodeError,KeyError,IndexError)as error:
+            if 'Unsupported tactical command kind' in str(error):unsupported_payloads.append(str(error))
+            continue
         if queue['source_end']==len(data):candidates.append(queue)
     if len(candidates)!=1:
-        raise UnsupportedVariant(f'Expected unique complete tactical queue; found {len(candidates)}. Unsupported kinds/layouts are not skipped.')
+        detail='; '.join(dict.fromkeys(unsupported_payloads))[:500]
+        raise UnsupportedVariant(f'Expected unique complete tactical queue; found {len(candidates)}. Unsupported kinds/layouts are not skipped.'+(f' {detail}'if detail else''))
     queue=candidates[0]
     initial={t['team_id']:t for t in historical['teams']}
     previous={key:value['team_instructions']for key,value in initial.items()}

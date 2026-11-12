@@ -10,6 +10,14 @@ from extended_match_reader import UnsupportedVariant
 from fmsave.models.tactics import TacticPosition
 
 SIGNATURE = bytes.fromhex('2244001b000000')
+NEW_SIGNATURE = bytes.fromhex('2244001b000100')
+
+def creator_at(data,start,stop):
+    # Inspect the first creator-shaped header; never skip an unfamiliar one.
+    at=data.find(SIGNATURE[:4],start,stop)
+    if at>=0 and data[at:at+7]not in(SIGNATURE,NEW_SIGNATURE):
+        raise UnsupportedVariant('Unrecognized creator header; refusing template fallback')
+    return at
 # Opaque preset-tail profile observed before manager primary creators. It is
 # not a semantic field mapping; unfamiliar variants must fail, not fall through
 # to the next valid-looking default creator in the same team region.
@@ -47,7 +55,7 @@ def read_match_tactics(data, teams, stats_end):
     result=[]
     for index,root in enumerate(roots):
         stop=roots[index+1]['offset']if index+1<len(roots)else len(data)
-        start=data.find(SIGNATURE,root['offset']+24,stop)
+        start=creator_at(data,root['offset']+24,stop)
         if start<0 or start-root['offset']>65536:
             raise UnsupportedVariant('No bounded primary manager creator')
         if data[start-len(PRIMARY_PREFIX):start]!=PRIMARY_PREFIX:
@@ -55,7 +63,7 @@ def read_match_tactics(data, teams, stats_end):
         record=decode_record(data,start)
         if record['end']>stop:raise UnsupportedVariant('Primary creator crosses team boundary')
         # Native 16dcf3 and 16dd0f read two creators in this order for revision68.
-        secondary=data.find(SIGNATURE,record['end'],stop)
+        secondary=creator_at(data,record['end'],stop)
         if secondary<0:raise UnsupportedVariant('Missing secondary manager creator')
         other=decode_record(data,secondary)
         if other['end']>stop:raise UnsupportedVariant('Secondary creator crosses team boundary')
@@ -78,12 +86,14 @@ def read_match_tactics(data, teams, stats_end):
             'state_scope':'serialized simulation manager primary baseline; static view omits subsequent recorded commands',
             'opening_tactic_confirmed':False,'whole_match_tactic_confirmed':False,
             'personal_instruction_scope':'stored overrides for current role; role defaults are not expanded',
-            'evidence':{'binding':'bounded team-root and native creator-order checks; partial engine-state walk',
+            'evidence':{'binding':'bounded team-root and creator-order checks; partial engine-state walk',
                         'team_root_offset':root['offset'],'team_region_end':stop,
                         'creator_offset':start,'decoded_creator_prefix_end':record['end'],
                         'secondary_creator_offset':secondary,
                         'opaque_primary_prefix_checked':True,
-                        'native_reader_rvas':['4973930','15bde0','16c160','16dc80','16fca0'],
+                        'creator_header_hex':data[start:start+8].hex(),
+                        'native_reader_rvas':['4973930','15bde0','16c160','16dc80','16fca0']if data[start:start+7]==SIGNATURE else [],
+                        'creator_order_evidence':'legacy native chain and structural checks'if data[start:start+7]==SIGNATURE else '27.0.1 structure revalidated; native owner-chain addresses not rederived',
                         'current_saved_boards_used':False}})
     return {'teams':result,'limitations':[
         'The static baseline alone does not establish effective kickoff/final settings or whole-match behavior.',

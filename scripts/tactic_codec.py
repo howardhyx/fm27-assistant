@@ -103,6 +103,12 @@ def read_tactics(save,team_id):
     """Locate declared records by arbitrary stored names, then verify against the independent team walk."""
     rows=list(save.tactics())
     with save._context.section('tactics_man')as section:
+        signature=bytes.fromhex('2244001b000000')
+        if save.info.build=='27.0.1+2494687':
+            from fmsave.readers.tactics import primary_collection_end,find_tactics_layout
+            layout=find_tactics_layout(save.info.section_schemas.get('tactics_man'),save.info.build)
+            section=section[:primary_collection_end(section,layout,save.info.file_name)]
+            signature=bytes.fromhex('2244001b000100')
         byname={}
         for row in rows:byname.setdefault(row.name,[]).append(row)
         decoded=[]
@@ -111,7 +117,7 @@ def read_tactics(save,team_id):
             while True:
                 at=section.find(needle,at)
                 if at<0:break
-                if at>=8 and section[at-8:at-1]==bytes.fromhex('2244001b000000'):starts.append(at-8)
+                if at>=8 and section[at-8:at-1]==signature:starts.append(at-8)
                 at+=1
             if len(starts)!=len(declared):raise ValueError(f'ambiguous tactic record binding for {name!r}: declared {len(declared)}, located {len(starts)}')
             for row,start in zip(declared,starts):
