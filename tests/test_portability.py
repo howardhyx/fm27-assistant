@@ -136,7 +136,9 @@ class PortabilityTests(unittest.TestCase):
                                  '--save', str(self.save), '--game-dir', str(self.dll), '--config', str(self.config_path)],
                                 capture_output=True, text=True, encoding='utf8')
         self.assertEqual(result.returncode, 1)
-        self.assertIn('UNSUPPORTED_BUILD', json.loads(result.stdout)['message'])
+        payload = json.loads(result.stdout)
+        self.assertFalse(payload['ok'])
+        self.assertNotIn('UNSUPPORTED_BUILD', payload['message'])
         self.assertFalse(self.config_path.exists())
 
     def test_release_omits_private_files_but_keeps_runtime(self):
@@ -160,3 +162,4 @@ class PortabilityTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
