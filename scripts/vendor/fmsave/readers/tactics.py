@@ -703,9 +703,9 @@ def _routine_tail_pattern(layout: TacticsLayout) -> re.Pattern[bytes]:
     )
 
 
-def _read_routine_groups(
+def _walk_routine_groups(
     section: bytes, area: int, block_end: int, layout: TacticsLayout
-) -> tuple[tuple[str | None, ...], bool]:
+) -> tuple[tuple[str | None, ...], bool, int]:
     """Read default routines and the stored counts of user-routine groups.
 
     A complete walk consumes every group, including its trailer byte. Terminators outside
@@ -736,10 +736,10 @@ def _read_routine_groups(
     for group_size in layout.routine_group_sizes:
         for _ in range(group_size):
             if not read_one():
-                return tuple(names), False
+                return tuple(names), False, cursor
         for _ in range(group_size):
             if cursor + _UINT32.size > block_end:
-                return tuple(names), False
+                return tuple(names), False, cursor
             count = _UINT32.unpack_from(section, cursor)[0]
             cursor += _UINT32.size
             if (
@@ -747,11 +747,62 @@ def _read_routine_groups(
                 <= count
                 <= layout.routine_group_count_range[1]
             ):
-                return tuple(names), False
+                return tuple(names), False, cursor
             for _ in range(count):
                 if not read_one():
-                    return tuple(names), False
-    return tuple(names), True
+                    return tuple(names), False, cursor
+    return tuple(names), True, cursor
+
+
+def _read_routine_groups(
+    section: bytes, area: int, block_end: int, layout: TacticsLayout
+) -> tuple[tuple[str | None, ...], bool]:
+    names, complete, _end = _walk_routine_groups(section, area, block_end, layout)
+    return names, complete
+
+
+def primary_collection_end(section: bytes, layout: TacticsLayout, file_name: str) -> int:
+    """Walk the header-owned collection, without scanning later objects for team IDs.
+
+    Every declared block must begin exactly where the previous counted routine
+    collection ended. Its declared tactic count, all 22-slot records and permutation
+    must agree. A later serialized manager copy is outside this root's ownership.
+    Unknown block tails, missing blocks and duplicate teams fail closed.
+    """
+    _selector, count = read_tactics_header(section, layout, file_name)
+    if not 1 <= count <= 64:
+        raise layout_mismatch(file_name, "unsupported primary team count", TACTICS_SECTION)
+    cursor = layout.first_block_offset
+    teams: set[int] = set()
+    candidates = _stored_block_starts(section, layout, file_name)
+    for _ in range(count):
+        if cursor + 6 > len(section):
+            raise _too_short(file_name, "the primary team collection")
+        team_id = _UINT32.unpack_from(section, cursor)[0]
+        if team_id in teams:
+            raise layout_mismatch(file_name, "duplicate team inside primary collection", TACTICS_SECTION)
+        teams.add(team_id)
+        if cursor not in candidates:
+            raise layout_mismatch(file_name, "primary block is not at the counted boundary", TACTICS_SECTION)
+        stop = next((at for at in candidates if at > cursor), len(section))
+        selection = _read_selection_part(section, cursor, stop, layout, file_name)
+        _names, complete, area = _read_routines(section, selection.end, stop, layout)
+        if not complete:
+            raise layout_mismatch(file_name, "incomplete primary routines", TACTICS_SECTION)
+        records, _presets = _strict_records(section, selection, area, layout, file_name)
+        if len(records) < selection.tactic_count:
+            recovered = _lenient_records(section, selection, area, layout, file_name)
+            if recovered is not None:
+                records = recovered.records
+        if len(records) != selection.tactic_count or any(
+            not record.walk_complete or not record.oop_index_permutation for record in records
+        ):
+            raise layout_mismatch(file_name, "primary tactic records disagree with declared count", TACTICS_SECTION)
+        _names, complete, end = _walk_routine_groups(section, area, stop, layout)
+        if not complete or end <= cursor:
+            raise layout_mismatch(file_name, "invalid primary routine boundary", TACTICS_SECTION)
+        cursor = end
+    return cursor
 
 
 def _read_routines(
