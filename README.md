@@ -5,7 +5,7 @@
 ## 使用条件
 
 - Windows x64、Python 3.12。依赖运行库随 `scripts/vendor` 提供。
-- 当前读取配置仅支持存档 build `27.0.0+2493426` 和匹配指纹的游戏 DLL，详见[维护说明](references/maintenance.md)。开源不表示自动兼容所有 FM27 更新、FM26、macOS 或 Linux。
+- 已有 `27.0.0+2493426` 与 `27.0.1+2494687` 的分能力适配。版本与 DLL 指纹不再作为准入阻断；未匹配历史验证组合时明确提示未经验证，仍严格检查数据结构与统计一致性，详见[维护说明](references/maintenance.md)。`27.0.1` 的赛季合计读取因完整性检查失败继续停用；开源不表示自动兼容所有 FM27 更新、FM26、macOS 或 Linux。
 - 用户自行安装游戏并提供本地存档；包中不包含游戏 DLL 或私人存档。
 
 ## 安装与首次使用
@@ -13,15 +13,16 @@
 技能标识为 `fm27-assistant`。将完整的 `fm27-assistant` 文件夹放入所用 Agent 的技能目录；例如 Codex 的用户技能目录为 `~/.codex/skills/`。也可直接让支持本地技能的 Agent 读取本目录的 [SKILL.md](SKILL.md)。Python 命令在本目录执行：
 
 ```powershell
-python scripts/fm.py doctor --remember-paths
 python scripts/fm.py baseline
+# 可选：诊断并记住当前存档与游戏路径
+python scripts/fm.py doctor --remember-paths
 ```
 
-首次从系统文档目录和 Steam 库发现位置，校验成功后保存到仅本机使用的 `local/paths.json`。后续直接复用。找不到目录、切换存档或安装目录不可写时，参阅[本地配置](references/local-setup.md)。个人路径不写进公共 Skill 文档。
+首次从系统文档目录和 Steam 库发现位置，可直接读取；`doctor --remember-paths` 是可选配置步骤，通过结构检查后才将路径保存到仅本机使用的 `local/paths.json`。后续直接复用。找不到目录、切换存档或安装目录不可写时，参阅[本地配置](references/local-setup.md)。个人路径不写进公共 Skill 文档。
 
 ## 读取范围
 
-[数据类型与命令](references/data-types.md)列出筛选方式；[字段与关联规则](references/semantics.md)解释 ID、原值和覆盖范围。只读本地文件，不操作游戏界面、进程或原存档；未知结构与不匹配版本明确失败。完整触球流、热图、连续跑位、完整定位球指令和实时数据尚不支持，部分字段语义仍未确认。
+[数据类型与命令](references/data-types.md)列出筛选方式；[字段与关联规则](references/semantics.md)解释 ID、原值和覆盖范围。只读本地文件，不操作游戏界面、进程或原存档；未知结构、数据越界或统计交叉检查失败时明确报错，版本不匹配仅提示。完整触球流、热图、连续跑位、完整定位球指令和实时数据尚不支持，部分字段语义仍未确认。
 
 ## 依赖与致谢
 
@@ -54,3 +55,4 @@ python -B scripts/package_release.py --out "<仓库外的发布包.zip>"
 ## 许可与来源
 
 本项目自有代码和说明采用 [GNU GPL v2](LICENSE)（GPL-2.0-only）；随附第三方组件保留各自许可，见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。Unicorn 的对应源码归档随包保留。本项目是非官方工具，与游戏厂商无隶属关系；游戏文件不在本项目许可范围内。
+
